@@ -1,6 +1,6 @@
 # Operation repository for SMS Checker
 
-This repository contains all the information required to run the SMS Checker application and operate the cluster with Docker Compose. It contains only two files: the docker-compose.yml file and this README file.
+This repository contains all the information required to run the SMS Checker application and operate the cluster with Docker Compose.
 
 For reference, the following repositories app and model-service contain the frontend and the backend of the application respectively.
 

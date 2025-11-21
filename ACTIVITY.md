@@ -23,7 +23,7 @@ Username: schnurchen
 - Alex: https://github.com/doda2025-team3/model-service/pull/4
 Followed lectures, did the self-tests. Worked on F10.
 
-- Carolyn: Worked on F7 and F8 - added the docker-compose.yml file as well as the individual workflows for the app and model-service repositories. 
+- Carolyn: https://github.com/doda2025-team3/operation/pull/1 Worked on F7 and F8 - added the docker-compose.yml file as well as the individual workflows for the app and model-service repositories. 
 
 - Daniel:
   - Attended the lectures and the lab

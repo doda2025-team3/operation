@@ -2,7 +2,7 @@
 
 This repository contains all the information required to run the SMS Checker application and operate the cluster with Docker Compose.
 
-For reference, the following repositories app and model-service contain the frontend and the backend of the application respectively.
+For reference, the following repositories app (https://github.com/doda2025-team3/app) and model-service (https://github.com/doda2025-team3/model-service) contain the frontend and the backend of the application respectively. Additionally, a version aware Maven library is included in the the lib-version repository (https://github.com/doda2025-team3/lib-version)
 
 ## Requirements
 

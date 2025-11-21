@@ -1,4 +1,5 @@
 Name: Ieva Mockaitytė
+
 Username: schnurchen
 ### Week Q2.1 (November 10+)
 Met up with the team, divided the tasks, set up the assignment locally

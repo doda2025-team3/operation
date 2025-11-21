@@ -16,6 +16,8 @@ Username: schnurchen
 
 - Jonte: Setup the model-service repo.
 
+- Gabriel: Attended the first lab to meet with the team. Setup and ran the project locally.
+
 ### Week Q2.2 (Nov 17+)
 
 - Alex: https://github.com/doda2025-team3/model-service/pull/4
@@ -33,6 +35,9 @@ I worked on F11 - I fully completed the pre-release part on branches other than 
 
 - Jonte: https://github.com/doda2025-team3/model-service/pull/1 
 Add a workflow to the model-service repository to build and release the model (F9 of A1).
+
+- Gabriel: https://github.com/doda2025-team3/model-service/pull/2 and https://github.com/doda2025-team3/app/pull/1
+Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 
 ### Week Q2.3 (Nov 24+)

@@ -8,6 +8,10 @@ For reference, the following repositories app and model-service contain the fron
 
 In order to run the application, certain requirements need to be met. The following products need to be installed - **Docker** and **Docker Compose**.
 
+## Loading the model
+
+The application expects the model to either be inside the model volume mount or at the link specified by the MODEL_URL variable. An example link to the v1.0.0 model has been put in a .env file.
+
 ## Starting the application
 
 To start the application, run the following command in the terminal:

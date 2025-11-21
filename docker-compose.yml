@@ -7,7 +7,7 @@ services:
       - "${APP_PORT:-8080}:8080"
     environment:
       MODEL_HOST: "http://model-service:${MODEL_PORT:-8081}"
-      APP_PORT: "${APP_PORT:-8080}"
+      SERVER_PORT: "${APP_PORT:-8080}"
     depends_on: 
       - model-service
 
@@ -20,5 +20,7 @@ services:
       - "${MODEL_HOST:-8081}:8081"
     environment:
       MODEL_PORT: "${MODEL_PORT:-8081}"
+      MODEL_PATH: "/models/model.joblib"
+      MODEL_URL: "${MODEL_URL}"
     volumes:
-      - ./output:/app/output
+      - ./models:/app/models

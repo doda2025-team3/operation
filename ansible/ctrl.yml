@@ -1,0 +1,7 @@
+- import_playbook: general.yml
+
+- hosts: all
+  tasks:
+    - name: Ctrl components example
+      debug:
+        msg: "Install kube-apiserver, controller-manager, etcd, etc."

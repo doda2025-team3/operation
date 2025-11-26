@@ -1,0 +1,7 @@
+- import_playbook: general.yml
+
+- hosts: all
+  tasks:
+    - name: Worker components example
+      debug:
+        msg:  "Install kubelet, kube-proxy, etc."

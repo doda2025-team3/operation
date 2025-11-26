@@ -1,0 +1,19 @@
+- name: Set authorized key taken from file
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Add ssh key daniel
+      ansible.posix.authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', './public_keys/key_daniel.pub') }}"
+
+    - name: Disable swap
+      command: swapoff -a
+
+    - name: Prevent re-mount on next boot
+      lineinfile:
+        path: /etc/fstab
+        regexp: '^\s*\S+\s+\S+\s+swap\s+'
+        state: absent

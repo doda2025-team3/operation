@@ -42,6 +42,9 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 ### Week Q2.3 (Nov 24+)
 
+- Daniel:
+  - Attended the lectures and the lab
+  - Worked on A2 1-5
 
 ### Week Q2.4 (Dec 1+)
 

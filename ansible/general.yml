@@ -23,7 +23,9 @@
         content: |
           overlay
           br_netfilter
-      notify: Load modules
+
+    - name: Load modules
+      command: modprobe br_netfilter
 
     - name: Set sysctl parameters for networking
       copy:
@@ -107,8 +109,6 @@
 
 
   handlers:
-    - name: Load modules
-      command: modprobe br_netfilter
-
+    
     - name: Apply sysctl parameters
       command: sysctl --system

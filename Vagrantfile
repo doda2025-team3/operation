@@ -25,6 +25,8 @@ Vagrant.configure("2") do |config|
 
     ctrl.vm.provision :ansible do |ansible|
       ansible.playbook = "ansible/ctrl.yml"
+      ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+
     end
 
   end
@@ -44,6 +46,8 @@ Vagrant.configure("2") do |config|
 
       node.vm.provision :ansible do |ansible|
         ansible.playbook = "ansible/node.yml"
+        ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+
       end
 
     end

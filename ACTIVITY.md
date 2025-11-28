@@ -52,6 +52,9 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 - Alex: [Tasks 20 and 21 A2](https://github.com/doda2025-team3/operation/pull/7)
   - Followed lectures. Worked on F20-21.
 
+- Ieva: https://github.com/doda2025-team3/operation/pull/6
+  - Worked on F11-12
+
 ### Week Q2.4 (Dec 1+)
 
 

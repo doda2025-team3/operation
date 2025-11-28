@@ -2,6 +2,7 @@
 
 - hosts: all
   tasks:
+    # 18 Getting the join command.
     - name: Create token on controller.
       ansible.builtin.command: "kubeadm token create --print-join-command"
       delegate_to: ctrl
@@ -9,6 +10,7 @@
       register: join_token
       become: yes
 
+    # 19 Using the join command.
     - name: Run command.
       ansible.builtin.shell: "{{ join_token.stdout }}"
       become: yes

@@ -107,7 +107,46 @@
         update_cache: yes
         allow_downgrade: yes
 
+    #11
+    - name: Make directory existent
+      ansible.builtin.file:
+        path: /etc/containerd
+        state: directory
 
+    - name: Default configuration
+      ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+      args:
+        creates: /etc/containerd/config.toml
+
+    - name: Disable AppArmor
+      ansible.builtin.lineinfile: 
+        path: /etc/containerd/config.toml
+        regexp: '^(\s*)disable_apparmor ='
+        line: '    disable_apparmor = true'
+
+    - name: Update the version of the sandbox image
+      ansible.builtin.lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '^(\s*)sandbox_image ='
+        line: '    sandbox_image = "registry.k8s.io/pause:3.10"'
+
+    - name: Set SystemdCgroup to true
+      ansible.builtin.lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '^(\s*)SystemdCgroup ='
+        line: '            SystemdCgroup = true'
+
+    - name: Restart containerd
+      ansible.builtin.service: 
+        name: containerd
+        state: restarted
+        enabled: true
+    #12
+    - name: Start the kubelet service
+      ansible.builtin.service:
+        name: kubelet
+        state: started
+        enabled: true
   handlers:
     
     - name: Apply sysctl parameters

@@ -1,4 +1,4 @@
-# IP range for step 20
+# Step 20 choose IP range 
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:

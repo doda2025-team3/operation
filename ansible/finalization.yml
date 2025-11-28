@@ -1,0 +1,33 @@
+# Step 20
+# It can be run like this: ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml
+
+- hosts: ctrl
+  become: yes
+  gather_facts: no
+
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+
+  tasks:
+
+    # Step 20.1 — Install MetalLB CRDs
+    - name: Install MetalLB CRDs
+      command: >
+        kubectl apply -f
+        https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+
+    # Step 20.2 — Wait for MetalLB to be ready
+    - name: Wait for MetalLB to be ready
+      command: >
+        kubectl wait -n metallb-system
+        -l app=metallb,component=controller
+        --for=condition=ready pod
+        --timeout=180s
+
+    # Step 20.3 — IPAddressPool
+    - name: Apply IPAddressPool
+      command: kubectl apply -f {{ playbook_dir }}/installers/metallb-ip-pool.yml
+
+    # Step 20.4 — L2Advertisement
+    - name: Apply L2Advertisement
+      command: kubectl apply -f {{ playbook_dir }}/installers/metallb-l2.yml

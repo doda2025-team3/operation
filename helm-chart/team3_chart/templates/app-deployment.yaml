@@ -1,0 +1,29 @@
+{{- if .Values.modelService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.service.port }}
+          env:
+            - name: SERVER_PORT
+              value: {{ .Values.app.env.SERVER_PORT | quote }}
+            - name: MODEL_HOST
+              value: {{ .Values.app.env.MODEL_HOST | quote }}
+{{- end}}

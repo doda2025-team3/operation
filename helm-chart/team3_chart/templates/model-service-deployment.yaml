@@ -1,0 +1,40 @@
+{{- if .Values.modelService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service
+  labels:
+    app: model-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service
+  template:
+    metadata:
+      labels:
+        app: model-service
+    spec:
+      containers:
+        - name: model-service
+          image: "{{ .Values.modelService.image.repository }}:{{ .Values.modelService.image.tag }}"
+          imagePullPolicy: {{ .Values.modelService.image.pullPolicy | default .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.modelService.service.port }}
+          env:
+            - name: MODEL_PATH
+              value: {{ .Values.modelService.env.MODEL_PATH | quote }}
+            - name: MODEL_URL
+              value: {{ .Values.modelService.env.MODEL_URL | quote }}
+          volumeMounts:
+            - name: model-volume
+              mountPath: {{ .Values.modelService.volume.mountPath| quote }}
+      volumes:
+        - name: model-volume
+          {{- if .Values.modelService.volume.hostPathEnabled }}
+          hostPath:
+            path: {{ .Values.modelService.volume.hostPath| quote }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end}}

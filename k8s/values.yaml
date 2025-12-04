@@ -1,0 +1,11 @@
+app:
+  image: "ghcr.io/doda2025-team3/app:latest"
+  port: 8080
+
+model:
+  image: "ghcr.io/doda2025-team3/model-service:latest"
+  port: 8081
+
+ingress:
+  enabled: true
+  host: "operation.local"

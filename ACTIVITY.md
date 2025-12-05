@@ -63,6 +63,10 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   Worked on adding to Helm Chart and fixed issue with the model.
 - Alex: https://github.com/doda2025-team3/operation/pull/8
 - Worked on K8s part
+- Gabriel: https://github.com/doda2025-team3/app/pull/5
+  Went over the comments from the previous assignments and thought about how to add everything.
+  Added using lib-version to app, which was one of the comments.
+  Began with adding missing things to A2 to improve the scores on the rubric.
 
 ### Week Q2.5 (Dec 8+)
 

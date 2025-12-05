@@ -1,30 +1,30 @@
-{{- if .Values.modelService.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: model-service
+  name: team3-ingress
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.modelService.ingress.className }}
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: {{ .Values.modelService.ingress.hosts.stable | quote }}
+    - host: {{ .Values.app.ingress.hosts.stable | quote }}
       http:
         paths:
-          - path: {{ .Values.modelService.ingress.path }}
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: model-service
+                name: app
                 port:
-                  number: {{ .Values.modelService.service.port }}
-    - host: {{ .Values.modelService.ingress.hosts.preRelease | quote }}
+                  number: {{ .Values.app.service.port }}
+    {{- if .Values.app.ingress.hosts.preview | quote }}
+    - host: {{ .Values.app.ingress.hosts.preRelease | quote }}
       http:
         paths:
-          - path: {{ .Values.modelService.ingress.path }}
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: model-service
+                name: app
                 port:
-                  number: {{ .Values.modelService.service.port }}
-{{- end }}
+                  number: {{ .Values.app.service.port }}
+    {{- end }}

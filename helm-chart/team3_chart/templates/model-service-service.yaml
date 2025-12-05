@@ -1,4 +1,3 @@
-{{- if .Values.modelService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,4 +10,3 @@ spec:
       port: {{ .Values.modelService.service.port }}
       targetPort: {{ .Values.modelService.service.port }}
   type: ClusterIP
-{{- end }}

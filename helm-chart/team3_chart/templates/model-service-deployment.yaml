@@ -1,4 +1,3 @@
-{{- if .Values.modelService.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,23 +17,14 @@ spec:
       containers:
         - name: model-service
           image: "{{ .Values.modelService.image.repository }}:{{ .Values.modelService.image.tag }}"
-          imagePullPolicy: {{ .Values.modelService.image.pullPolicy | default .Values.global.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.modelService.service.port }}
           env:
-            - name: MODEL_PATH
-              value: {{ .Values.modelService.env.MODEL_PATH | quote }}
-            - name: MODEL_URL
-              value: {{ .Values.modelService.env.MODEL_URL | quote }}
+            - name: MODEL_PORT
+              value: "{{ .Values.modelService.env.MODEL_PORT }}"
           volumeMounts:
             - name: model-volume
               mountPath: {{ .Values.modelService.volume.mountPath| quote }}
       volumes:
         - name: model-volume
-          {{- if .Values.modelService.volume.hostPathEnabled }}
-          hostPath:
-            path: {{ .Values.modelService.volume.hostPath| quote }}
-          {{- else }}
           emptyDir: {}
-          {{- end }}
-{{- end}}

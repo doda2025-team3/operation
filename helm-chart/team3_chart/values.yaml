@@ -11,19 +11,16 @@ app:
   service:
     port: 8080
   env:
-    SERVER_PORT: "8080"
-    MODEL_HOST: "http://model-service:8081"  
-  ingress:
-    enabled: false
+    SERVER_PORT: 8080
+    MODEL_HOST: "http://model-service"
+  ingress: 
     className: nginx
-    host: "app.local"
-    # stable: "app-stable.local"
-    # pre-release: "app-pre.local"
-    path: "/" 
+    hosts:
+      stable: team3.local
+      preview: "" 
 
 
 modelService:
-  enabled: true
   image:
     repository: ghcr.io/doda2025-team3/model-service
     tag: "latest"
@@ -31,23 +28,15 @@ modelService:
   service:
     port: 8081
   env:
-    MODEL_PATH: "/models/model.joblib"
-    MODEL_URL: ""  
+    MODEL_PORT: 8081
   volume:
-    hostPathEnabled: false
-    hostPath: "/mnt/shared/models"  
-    mountPath: "/models"
-  ingress:
-    enabled: false
-    className: nginx
-    hosts:
-      stable: "model-stable.local"
-      preRelease: "model-pre.local"
-    path: "/" 
-  config:
-    extraConfig: |
-      # Add optional config here
-  secret:
-    enabled: false
-    username: "admin"
-    password: "admin123"
+    mountPath: /app/output
+
+config:
+  extraConfig: |
+    # Add optional config here
+
+secret:
+  enabled: false
+  username: "admin"
+  password: "admin123"

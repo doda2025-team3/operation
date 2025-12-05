@@ -1,4 +1,3 @@
-{{- if .Values.modelService.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +22,6 @@ spec:
             - containerPort: {{ .Values.app.service.port }}
           env:
             - name: SERVER_PORT
-              value: {{ .Values.app.env.SERVER_PORT | quote }}
+              value: "{{ .Values.app.env.SERVER_PORT }}"
             - name: MODEL_HOST
-              value: {{ .Values.app.env.MODEL_HOST | quote }}
-{{- end}}
+              value: "{{ .Values.app.env.MODEL_HOST }}:{{ .Values.modelService.service.port }}"

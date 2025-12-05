@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "sms-checker.fullname" . }}-backend
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: sms-checker
+      component: backend
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

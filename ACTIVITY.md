@@ -67,7 +67,7 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   - Worked on A3 enabling monitoring
   - https://github.com/doda2025-team3/model-service/pull/6
   - https://github.com/doda2025-team3/app/pull/4
-  - https://github.com/doda2025-team3/operation/pull/8
+  - https://github.com/doda2025-team3/operation/pull/9
 
 ### Week Q2.5 (Dec 8+)
 

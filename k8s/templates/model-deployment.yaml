@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service
+  template:
+    metadata:
+      labels:
+        app: model-service
+    spec:
+      containers:
+        - name: model-service
+          image: {{ .Values.model.image }}
+          ports:
+            - containerPort: {{ .Values.model.port }}
+          env:
+            - name: MODEL_PORT
+              value: "{{ .Values.model.port }}"
+            - name: MODEL_PATH
+              value: "/models/model.joblib"
+            - name: MODEL_URL
+              value: "none"
+          volumeMounts:
+            - name: model-volume
+              mountPath: /models
+      volumes:
+        - name: model-volume
+          emptyDir: {}

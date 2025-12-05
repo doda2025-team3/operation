@@ -5,7 +5,23 @@ app:
 model:
   image: "ghcr.io/doda2025-team3/model-service:latest"
   port: 8081
+  serviceName: "model-service"
 
 ingress:
   enabled: true
   host: "operation.local"
+
+
+config:
+  extraConfig: |
+    # Add optional config here
+
+secret:
+  enabled: false
+  username: "admin"
+  password: "admin123"
+
+sharedVolume:
+  enabled: true
+  hostPath: "/mnt/shared"
+  mountPath: "/models"

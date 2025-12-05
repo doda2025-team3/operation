@@ -1,0 +1,42 @@
+global:
+  imagePullPolicy: IfNotPresent
+
+
+app:
+  enabled: true
+  image:
+    repository: ghcr.io/doda2025-team3/app
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  env:
+    SERVER_PORT: 8080
+    MODEL_HOST: "http://model-service"
+  ingress: 
+    className: nginx
+    hosts:
+      stable: team3.local
+      preview: "" 
+
+
+modelService:
+  image:
+    repository: ghcr.io/doda2025-team3/model-service
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    port: 8081
+  env:
+    MODEL_PORT: 8081
+  volume:
+    mountPath: /app/output
+
+config:
+  extraConfig: |
+    # Add optional config here
+
+secret:
+  enabled: false
+  username: "admin"
+  password: "admin123"

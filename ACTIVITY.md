@@ -66,6 +66,7 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 - Gabriel: https://github.com/doda2025-team3/app/pull/5
   Went over the comments from the previous assignments and thought about how to add everything.
   Added using lib-version to app, which was one of the comments.
+  Went over merge request for monitoring within app.
   Began with adding missing things to A2 to improve the scores on the rubric.
 
 ### Week Q2.5 (Dec 8+)

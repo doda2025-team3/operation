@@ -21,4 +21,9 @@ spec:
             - name: SERVER_PORT
               value: "{{ .Values.app.port }}"
             - name: MODEL_HOST
-              value: "http://model-service:{{ .Values.model.port }}"
+              value: "http://{{ .Values.model.serviceName }}:{{ .Values.model.port }}"
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secret

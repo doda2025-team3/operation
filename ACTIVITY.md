@@ -68,6 +68,8 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   Added using lib-version to app, which was one of the comments.
   Went over merge request for monitoring within app.
   Began with adding missing things to A2 to improve the scores on the rubric.
+- Ieva: https://github.com/doda2025-team3/operation/pull/12
+  Finished my task 13 from the previous week. Added other missing steps (14-16)
 
 ### Week Q2.5 (Dec 8+)
 

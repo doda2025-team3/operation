@@ -15,5 +15,10 @@ kube-prometheus-stack:
     prometheusSpec:
       serviceMonitorSelector: {}
       podMonitorSelector: {}
+      ruleSelector: {}
+  alertManager:
+    alertManagerSpec:
+      alertManagerConfigSelector: {}
+      alertManagerConfigNamespaceSelector: {}
   grafana:
     enabled: true

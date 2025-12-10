@@ -27,6 +27,7 @@ Followed lectures, did the self-tests. Worked on F10.
   - Attended the lectures and the lab
   - Continued working on F1 and F2
   - Helped the work of F11
+  - https://github.com/doda2025-team3/lib-version/pull/1
 
 - Ieva: https://github.com/doda2025-team3/lib-version/pull/2
 I worked on F11 - I fully completed the pre-release part on branches other than main; I was helped with the main branch stable release part.
@@ -43,6 +44,8 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 - Daniel:
   - Attended the lectures and the lab
   - Worked on A2 1-5
+  - I accidentally pushed this week directly to main, my push can be found here:
+  - https://github.com/doda2025-team3/operation/compare/68cc2576e18acc63ca359fac6a5bd714731b59ab...73e70d47090e524beb8689a6f89aa04b4f917b92
  
 - Gabriel: https://github.com/doda2025-team3/operation/pull/5
   - Went through a pull request and implemented steps 18 and 19.
@@ -57,6 +60,12 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 ### Week Q2.4 (Dec 1+)
 
+- Daniel:
+  - Attended the lectures and the lab
+  - Worked on A3 enabling monitoring
+  - https://github.com/doda2025-team3/model-service/pull/6
+  - https://github.com/doda2025-team3/app/pull/4
+  - https://github.com/doda2025-team3/operation/pull/9
 - Carolyn: https://github.com/doda2025-team3/operation/pull/11
   Worked on adding to Helm Chart and fixed issue with the model.
 - Alex: https://github.com/doda2025-team3/operation/pull/8

@@ -13,6 +13,13 @@ ingress:
   enabled: true
   host: "operation.local"
 
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      serviceMonitorSelector: {}
+      podMonitorSelector: {}
+  grafana:
+    enabled: true
 
 config:
   extraConfig: |

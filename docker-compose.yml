@@ -17,10 +17,9 @@ services:
     container_name: model-service
     restart: unless-stopped
     ports:
-      - "${MODEL_HOST:-8081}:8081"
+      - "${MODEL_PORT:-8081}:8081"
     environment:
       MODEL_PORT: "${MODEL_PORT:-8081}"
-      MODEL_PATH: "/models/model.joblib"
-      MODEL_URL: "${MODEL_URL}"
+      MODEL_DIR: "${MODEL_DIR:-/models}"
     volumes:
-      - ./models:/app/models
+      - ./models:/models

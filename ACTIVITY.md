@@ -1,5 +1,3 @@
-- Name: Ieva Mockaitytė
-Username: schnurchen
 
 ### Week Q2.1 (Nov 10+)
 

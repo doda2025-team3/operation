@@ -2,6 +2,16 @@
 
 - hosts: all
   tasks:
-    - name: Worker components example
-      debug:
-        msg:  "Install kubelet, kube-proxy, etc."
+    # 18 Getting the join command.
+    - name: Create token on controller.
+      ansible.builtin.command: "kubeadm token create --print-join-command"
+      delegate_to: ctrl
+      run_once: true
+      register: join_token
+      become: yes
+
+    # 19 Using the join command.
+    - name: Run command.
+      ansible.builtin.shell: "{{ join_token.stdout }}"
+      become: yes
+      when: inventory_hostname != 'ctrl'

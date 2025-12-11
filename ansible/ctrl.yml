@@ -89,3 +89,8 @@
         name: helm
         state: present
         
+    #17
+    - name: Install plugin
+      ansible.builtin.command: helm plugin install https://github.com/databus23/helm-diff
+      args:
+        creates: "{{ ansible_facts['env']['HOME'] }}/.local/share/helm/plugins/diff"

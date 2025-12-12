@@ -90,6 +90,13 @@ Daniel:
 
 - Carolyn: https://github.com/doda2025-team3/operation/pull/16
   Worked on AlertManager aspect leftover from Assignment 3
+- Gabriel: https://github.com/doda2025-team3/operation/pull/14
+  Went over and analysed multiple pull requests in operation and model-service. (https://github.com/doda2025-team3/model-service/pull/7, https://github.com/doda2025-team3/model-service/pull/5 and https://github.com/doda2025-team3/operation/pull/11)
+  I edited the model-service to create a model when there isn't any in the volume.
+  I added helm plugin in ctrl.
+  I edited the node vagrant to be more robust.
+  Studied about istio implementation.
+  
 
 
 ### Week Q2.6 (Dec 15+)

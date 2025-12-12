@@ -1,9 +1,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ include "sms-checker.fullname" . }}-alerts
+  name: app-alerts
   labels:
-    release: prometheus
+    release: {{ .Release.Name }}
 spec:
   groups:
     - name: operation.rules
@@ -16,4 +16,4 @@ spec:
           annotations:
             summary: "High request rate on {{ `{{ $labels.instance }}` }}"
             description: >
-              Service recieved more than 15 HTTP requests/minute for >= 15 minutes.
+              Service recieved more than 15 HTTP requests/minute for >= 2 minutes.

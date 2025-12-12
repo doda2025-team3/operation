@@ -96,6 +96,8 @@ Daniel:
   I added helm plugin in ctrl.
   I edited the node vagrant to be more robust.
   Studied about istio implementation.
+- Alex
+- Started working on a use case
   
 
 

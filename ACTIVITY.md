@@ -80,6 +80,10 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 ### Week Q2.5 (Dec 8+)
 
+Daniel:
+- Worked on assignment A4, section Traffic Management
+- https://github.com/doda2025-team3/operation/pull/15
+
 
 ### Week Q2.6 (Dec 15+)
 

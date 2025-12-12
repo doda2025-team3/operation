@@ -34,3 +34,6 @@ sharedVolume:
   enabled: true
   hostPath: "/mnt/shared"
   mountPath: "/models"
+
+istio:
+  ingressGatewayLabel: ingressgateway

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service-v1
+  labels:
+    app: model-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: model-service
+        version: v1
+    spec:
+      containers:
+        - name: model-service
+          image: {{ .Values.model.image }}
+          ports:
+            - containerPort: {{ .Values.model.port }}
+          env:
+            - name: MODEL_PORT
+              value: "{{ .Values.model.port }}"
+            - name: MODEL_DIR
+              value: "/app/output" 
+            - name: MODEL_PATH
+              value: "/app/output/model.joblib"
+            # - name: MODEL_URL
+            #   value: "{{ .Values.model.MODEL_URL }}"
+          volumeMounts:
+            - name: shared-volume
+              mountPath: {{ .Values.sharedVolume.mountPath | quote }}
+      volumes:
+        - name: shared-volume
+          hostPath:
+            path: {{ .Values.sharedVolume.hostPath | quote }}
+            type: DirectoryOrCreate

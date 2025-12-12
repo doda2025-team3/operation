@@ -10,7 +10,6 @@ model:
   serviceName: "model-service"
   MODEL_URL: "https://github.com/doda2025-team3/model-service/releases/latest/download/model.joblib"
 
-
 ingress:
   enabled: true
   host: "operation.local"
@@ -20,17 +19,35 @@ kube-prometheus-stack:
     prometheusSpec:
       serviceMonitorSelector: {}
       podMonitorSelector: {}
+  alertmanager:
+    alertmanagerSpec:
+      alertmanagerConfigSelector: {}
   grafana:
     enabled: true
+
+monitoring:
+  enabled: true
+  alerts:
+    email:
+      enabled: true
+      to: "carolynalcaraz2711@gmail.com"
+      from: "alertmanager@example.com"
+      require_tls: false
+      smarthost: "mailhog:1025"
+      username: ""
+      password: ""
+      passwordName: "alertmanager-secret-password"
+
 
 config:
   extraConfig: |
     # Add optional config here
 
 secret:
-  enabled: false
-  username: "admin"
-  password: "admin123"
+  enabled: true
+  name: operation-credentials
+  username: ""
+  password: ""
 
 sharedVolume:
   enabled: true

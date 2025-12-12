@@ -5,7 +5,7 @@ metadata:
   namespace: istio-system 
 data:
   config.yaml: |
-    domain: "global"
+    domain: ratelimit
     descriptors:
       - key: generic_key
         value: "all"

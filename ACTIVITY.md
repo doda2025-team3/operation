@@ -84,6 +84,13 @@ Daniel:
 - Worked on assignment A4, section Traffic Management
 - https://github.com/doda2025-team3/operation/pull/15
 
+Daniel:
+- Worked on assignment A4, section Traffic Management
+- https://github.com/doda2025-team3/operation/pull/15
+
+- Carolyn: https://github.com/doda2025-team3/operation/pull/16
+  Worked on AlertManager aspect leftover from Assignment 3
+
 
 ### Week Q2.6 (Dec 15+)
 

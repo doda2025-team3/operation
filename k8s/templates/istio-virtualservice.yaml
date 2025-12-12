@@ -17,19 +17,27 @@ spec:
             subset: v1
             port:
               number: {{ .Values.app.port }}
+<<<<<<< HEAD
           weight: 100
           headers:
             response:
               add:
                 x-app-version: v1
+=======
+          weight: 90
+>>>>>>> 4e46853 (Added the A4 traffic management part)
         - destination:
             host: app
             subset: v2
             port:
               number: {{ .Values.app.port }}
+<<<<<<< HEAD
           weight: 0
           headers:
             response:
               add:
                 x-app-version: v2
 
+=======
+          weight: 10
+>>>>>>> 4e46853 (Added the A4 traffic management part)

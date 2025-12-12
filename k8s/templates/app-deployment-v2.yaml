@@ -1,34 +1,69 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+<<<<<<< HEAD
+  name: app-v1
   labels:
     app: app
+    version: v1
+=======
+  name: app-v2
+  labels:
+    app: app
+    version: v2
+>>>>>>> 4e46853 (Added the A4 traffic management part)
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: app
+<<<<<<< HEAD
+<<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
       version: v2
+========
+      version: v1
+>>>>>>>> 4e46853 (Added the A4 traffic management part):k8s/templates/app-deployment-v1.yaml
+=======
+      version: v2
+>>>>>>> 4e46853 (Added the A4 traffic management part)
   template:
     metadata:
       labels:
         app: app
+<<<<<<< HEAD
+<<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
         version: v2
+========
+        version: v1
+>>>>>>>> 4e46853 (Added the A4 traffic management part):k8s/templates/app-deployment-v1.yaml
     spec:
       containers:
         - name: app
           image: {{ .Values.app.v2Image }}
+=======
+        version: v2
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.app.image }}
+>>>>>>> 4e46853 (Added the A4 traffic management part)
           ports:
-            - name: http
-              containerPort: {{ .Values.app.port }}
+            - containerPort: {{ .Values.app.port }}
           env:
             - name: SERVER_PORT
               value: "{{ .Values.app.port }}"
             - name: MODEL_HOST
               value: "http://{{ .Values.model.serviceName }}:{{ .Values.model.port }}"
             - name: APP_VERSION
+<<<<<<< HEAD
+<<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
               value: "v2"
+========
+              value: "v1"
+>>>>>>>> 4e46853 (Added the A4 traffic management part):k8s/templates/app-deployment-v1.yaml
+=======
+              value: "v2"
+>>>>>>> 4e46853 (Added the A4 traffic management part)
           envFrom:
             - configMapRef:
                 name: app-config

@@ -4,10 +4,13 @@ metadata:
   name: {{ .Release.Name }}-app-dr
 spec:
   host: app
+<<<<<<< HEAD
   trafficPolicy:
     loadBalancer:
       consistentHash:
         httpHeaderName: user
+=======
+>>>>>>> 4e46853 (Added the A4 traffic management part)
   subsets:
     - name: v1
       labels:

@@ -10,16 +10,36 @@ spec:
   selector:
     matchLabels:
       app: app
+<<<<<<< HEAD
       version: v1
+=======
+<<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
+      version: v2
+========
+      version: v1
+>>>>>>>> 4e46853 (Added the A4 traffic management part):k8s/templates/app-deployment-v1.yaml
+>>>>>>> 4e46853 (Added the A4 traffic management part)
   template:
     metadata:
       labels:
         app: app
+<<<<<<< HEAD
         version: v1
     spec:
       containers:
         - name: app
           image: {{ .Values.app.v1Image }}
+=======
+<<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
+        version: v2
+========
+        version: v1
+>>>>>>>> 4e46853 (Added the A4 traffic management part):k8s/templates/app-deployment-v1.yaml
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.app.v2Image }}
+>>>>>>> 4e46853 (Added the A4 traffic management part)
           ports:
             - containerPort: {{ .Values.app.port }}
           env:
@@ -28,9 +48,21 @@ spec:
             - name: MODEL_HOST
               value: "http://{{ .Values.model.serviceName }}:{{ .Values.model.port }}"
             - name: APP_VERSION
+<<<<<<< HEAD
               value: "v1"
+=======
+<<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
+              value: "v2"
+========
+              value: "v1"
+>>>>>>>> 4e46853 (Added the A4 traffic management part):k8s/templates/app-deployment-v1.yaml
+>>>>>>> 4e46853 (Added the A4 traffic management part)
           envFrom:
             - configMapRef:
                 name: app-config
             - secretRef:
+<<<<<<< HEAD
                 name: {{ .Values.secret.name }}
+=======
+                name: app-secret
+>>>>>>> 4e46853 (Added the A4 traffic management part)

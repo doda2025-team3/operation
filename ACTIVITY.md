@@ -88,6 +88,8 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   I added helm plugin in ctrl.
   I edited the node vagrant to be more robust.
   Studied about istio implementation.
+- Alex
+- Started working on a use case
   
 
 

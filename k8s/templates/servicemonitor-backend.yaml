@@ -1,7 +1,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "sms-checker.fullname" . }}-backend
+  name: app-backend
+  labels:
+    release: {{ .Release.Name }}
 spec:
   namespaceSelector:
     matchNames:
@@ -12,5 +14,5 @@ spec:
       component: backend
   endpoints:
     - port: http
-      path: /metrics
+      path: /actuator/prometheus
       interval: 15s

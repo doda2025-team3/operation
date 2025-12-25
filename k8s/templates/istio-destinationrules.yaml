@@ -7,9 +7,7 @@ spec:
   trafficPolicy:
     loadBalancer:
       consistentHash:
-        httpCookie:
-          name: istio-canary
-          ttl: 0s
+        httpHeaderName: user
   subsets:
     - name: v1
       labels:

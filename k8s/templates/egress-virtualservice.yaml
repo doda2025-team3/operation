@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-egressentry
+  namespace: {{ .Release.Namespace }}
+spec:
+  gateways:
+    - istio-system/{{ .Release.Name }}-egressgateway
+    - mesh
+  hosts:
+    - httpbin.org
+  tls:
+    - match:
+      - gateways: ["mesh"]
+        port: 443
+        sniHosts: ["httpbin.org"]
+      route:
+        - destination:
+            host: istio-egressgateway.istio-system.svc.cluster.local
+            port:
+              number: 443
+    - match:
+      - gateways: ["istio-system/{{ .Release.Name }}-egressgateway"]
+        port: 443
+        sniHosts: ["httpbin.org"]
+      route:
+        - destination:
+            host: httpbin.org
+            port:
+              number: 443

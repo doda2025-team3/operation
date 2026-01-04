@@ -98,6 +98,7 @@
           192.168.56.{{ 100 + i }} node-{{ i }}
           {% endfor %}
 
+    # Step 9
     - name: Ensure appropriate dependencies are installed
       apt:
         name:
@@ -116,11 +117,14 @@
       apt_repository:
         filename: kubernetes
         repo: "deb https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /"
+        state: present
 
     - name: Update apt cache
       apt:
         update_cache: yes
 
+
+    # Step 10
     - name: Install K8s tools
       apt:
         name: 
@@ -133,7 +137,7 @@
         update_cache: yes
         allow_downgrade: yes
 
-    #11
+    # Step 11
     - name: Make directory existent
       ansible.builtin.file:
         path: /etc/containerd
@@ -155,25 +159,28 @@
         path: /etc/containerd/config.toml
         regexp: '^(\s*)sandbox_image ='
         line: '    sandbox_image = "registry.k8s.io/pause:3.10"'
+      notify: Restart containerd
 
     - name: Set SystemdCgroup to true
       ansible.builtin.lineinfile:
         path: /etc/containerd/config.toml
         regexp: '^(\s*)SystemdCgroup ='
         line: '            SystemdCgroup = true'
+    
+    # Step 12
+    - name: Start the kubelet service
+      ansible.builtin.service:
+        name: kubelet
+        state: started
+        enabled: true
+        
+  handlers:
 
     - name: Restart containerd
       ansible.builtin.service: 
         name: containerd
         state: restarted
         enabled: true
-    #12
-    - name: Start the kubelet service
-      ansible.builtin.service:
-        name: kubelet
-        state: started
-        enabled: true
-  handlers:
     
     - name: Apply sysctl parameters
       command: sysctl --system

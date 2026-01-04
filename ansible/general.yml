@@ -1,13 +1,27 @@
 - name: Set authorized key taken from file
   hosts: all
   become: true
+  gather_facts: true
+  vars:
+    ssh_key_dir: "public_keys"
+    ssh_keys: "{{ lookup('fileglob', ssh_key_dir ~ '/*.pub', wantlist=True) }}"
+
+
 
   tasks:
-    - name: Add ssh key daniel
+    - name: Add ssh keys of team
       ansible.posix.authorized_key:
         user: vagrant
         state: present
-        key: "{{ lookup('file', './public_keys/key_daniel.pub') }}"
+        key: "{{ lookup('file', item) }}"
+      loop: "{{ ssh_keys }}"
+      when: ssh_keys | length > 0
+
+    - name: Enable ssh
+      service:
+        name: ssh
+        state: started
+        enabled: true
 
     - name: Disable swap
       command: swapoff -a

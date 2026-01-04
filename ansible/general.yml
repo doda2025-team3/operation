@@ -9,6 +9,7 @@
 
 
   tasks:
+    # Step 4
     - name: Add ssh keys of team
       ansible.posix.authorized_key:
         user: vagrant
@@ -35,6 +36,7 @@
         regexp: '^\s*\S+\s+\S+\s+swap\s+'
         state: absent
       
+    # Step 6
     - name: Permanently enable modules
       copy:
         dest: /etc/modules-load.d/k8s.conf
@@ -43,7 +45,12 @@
           br_netfilter
 
     - name: Load modules
-      command: modprobe br_netfilter
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
 
     - name: Set sysctl parameters for networking
       copy:

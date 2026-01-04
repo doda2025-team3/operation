@@ -52,6 +52,7 @@
         - overlay
         - br_netfilter
 
+    # Step 7
     - name: Set sysctl parameters for networking
       copy:
         dest: /etc/sysctl.d/k8s.conf
@@ -82,7 +83,7 @@
         state: present
         reload: yes
 
-
+    # Step 8
     - name: Manage /etc/hosts
       copy:
         dest: /etc/hosts
@@ -94,7 +95,7 @@
 
           192.168.56.100 ctrl
           {% for i in range(1, NUM_WORKER_NODES + 1) %}
-          192.168.56.10{{ i }} node-{{ i }}
+          192.168.56.{{ 100 + i }} node-{{ i }}
           {% endfor %}
 
     - name: Ensure appropriate dependencies are installed

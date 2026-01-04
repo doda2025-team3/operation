@@ -23,14 +23,18 @@
         state: started
         enabled: true
 
+    # Step 5
     - name: Disable swap
       command: swapoff -a
+      when: ansible_swaptotal_mb | int > 0
+      changed_when: ansible_swaptotal_mb | int > 0
 
     - name: Prevent re-mount on next boot
       lineinfile:
         path: /etc/fstab
         regexp: '^\s*\S+\s+\S+\s+swap\s+'
         state: absent
+      
     - name: Permanently enable modules
       copy:
         dest: /etc/modules-load.d/k8s.conf

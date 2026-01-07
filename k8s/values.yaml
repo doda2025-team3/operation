@@ -12,6 +12,8 @@ ingress:
   enabled: true
   host: "operation.local"
   className: "nginx"
+  stableHost: "operation.local"
+  canaryHost: "operation-canary.local"
 
 kube-prometheus-stack:
   prometheus:

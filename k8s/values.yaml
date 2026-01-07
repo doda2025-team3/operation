@@ -11,6 +11,7 @@ model:
 ingress:
   enabled: true
   host: "operation.local"
+  className: ""
 
 kube-prometheus-stack:
   prometheus:

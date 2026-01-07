@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app
+  labels:
+    app: app
 spec:
   replicas: 1
   selector:
@@ -16,6 +18,7 @@ spec:
         - name: app
           image: {{ .Values.app.image }}
           ports:
+            - name: http
             - containerPort: {{ .Values.app.port }}
           env:
             - name: SERVER_PORT

@@ -51,4 +51,4 @@ secret:
 sharedVolume:
   enabled: true
   hostPath: "/mnt/shared"
-  mountPath: "/models"
+  mountPath: "/mnt/shared"

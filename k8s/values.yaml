@@ -13,7 +13,7 @@ model:
 ingress:
   enabled: true
   host: "operation.local"
-  className: ""
+  className: "nginx"
 
 kube-prometheus-stack:
   prometheus:
@@ -58,3 +58,4 @@ sharedVolume:
 istio:
   ingressGatewayLabel: ingressgateway
   mountPath: "/mnt/shared"
+  mountPath: "/app/output"

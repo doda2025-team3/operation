@@ -21,7 +21,7 @@ spec:
           image: {{ .Values.app.v2Image }}
           ports:
             - name: http
-            - containerPort: {{ .Values.app.port }}
+              containerPort: {{ .Values.app.port }}
           env:
             - name: SERVER_PORT
               value: "{{ .Values.app.port }}"

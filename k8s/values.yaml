@@ -24,6 +24,7 @@ kube-prometheus-stack:
   alertmanager:
     alertmanagerSpec:
       alertmanagerConfigSelector: {}
+      alertmanagerConfigNamespaceSelector: {}
   grafana:
     enabled: true
 
@@ -33,9 +34,9 @@ monitoring:
     email:
       enabled: true
       to: "carolynalcaraz2711@gmail.com"
-      from: "alertmanager@example.com"
-      require_tls: false
-      smarthost: "mailhog:1025"
+      from: "democarolyn88@gmail.com"
+      require_tls: true
+      smarthost: "smtp.gmail.com:587"
       username: ""
       password: ""
       passwordName: "alertmanager-secret-password"

@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: operation-ingress
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:
@@ -15,5 +15,5 @@ spec:
               service:
                 name: app
                 port:
-                  number: {{ .Values.app.port }}
+                  number: 80
 {{- end }}

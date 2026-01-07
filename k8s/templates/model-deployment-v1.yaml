@@ -26,9 +26,9 @@ spec:
             - name: MODEL_PORT
               value: "{{ .Values.model.port }}"
             - name: MODEL_PATH
-              value: "/models/model.joblib"
-            - name: MODEL_URL
-              value: "{{ .Values.model.MODEL_URL }}"
+              value: "/mnt/shared/model.joblib"
+            # - name: MODEL_URL
+            #   value: "{{ .Values.model.MODEL_URL }}"
           volumeMounts:
             - name: shared-volume
               mountPath: {{ .Values.sharedVolume.mountPath | quote }}

@@ -57,3 +57,4 @@ sharedVolume:
 
 istio:
   ingressGatewayLabel: ingressgateway
+  mountPath: "/mnt/shared"

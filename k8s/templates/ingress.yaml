@@ -6,10 +6,20 @@ metadata:
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - host: {{ .Values.ingress.host | quote }}
+    - host: {{ .Values.ingress.stableHost }}
       http:
         paths:
-          - path: /
+          - path: {{ .Values.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 80
+    - host: {{ .Values.ingress.canaryHost }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path | quote }}
             pathType: Prefix
             backend:
               service:

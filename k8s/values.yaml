@@ -39,6 +39,7 @@ monitoring:
 
 
 config:
+  logLevel: "LEVEL"
   extraConfig: |
     # Add optional config here
 

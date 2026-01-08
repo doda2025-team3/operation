@@ -28,12 +28,17 @@ kube-prometheus-stack:
       alertmanagerConfigNamespaceSelector: {}
   grafana:
     enabled: true
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboards
+        lavelValue: "1"
 
 monitoring:
   enabled: true
   alerts:
     email:
-      enabled: true
+      enabled: false # Change to true when wanting to test
       to: "carolynalcaraz2711@gmail.com"
       from: "democarolyn88@gmail.com"
       require_tls: true

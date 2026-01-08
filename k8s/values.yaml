@@ -20,6 +20,7 @@ kube-prometheus-stack:
   prometheus:
     prometheusSpec:
       serviceMonitorSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
       podMonitorSelector: {}
   alertmanager:
     alertmanagerSpec:

@@ -13,6 +13,7 @@ spec:
           for: 2m
           labels:
             severity: warning
+            namespace: {{ .Release.Namespace }}
           annotations:
             summary: "High request rate on {{ `{{ $labels.instance }}` }}"
             description: >

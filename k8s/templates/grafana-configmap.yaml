@@ -8,5 +8,5 @@ metadata:
 data:
   sms-frontend-overview.json: |
 {{ (.Files.Get "dashboards/sms-frontend-overview.json") | indent 4 }} 
-  sms-decison.json: |
+  sms-decision.json: |
 {{ (.Files.Get "dashboards/sms-decision.json") | indent 4 }} 

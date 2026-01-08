@@ -7,6 +7,6 @@ metadata:
     grafana_dashboards: "1"
 data:
   sms-frontend-overview.json: |
-  {{ (.Files.Get "dashboards/sms-frontend-overview.json") | indent 4 }} 
+{{ (.Files.Get "dashboards/sms-frontend-overview.json") | indent 4 }} 
   sms-decison.json: |
-  {{ (.Files.Get "dashboards/sms-decision.json") | indent 4 }} 
+{{ (.Files.Get "dashboards/sms-decision.json") | indent 4 }} 

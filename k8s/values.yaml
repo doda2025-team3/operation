@@ -32,13 +32,13 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         label: grafana_dashboards
-        lavelValue: "1"
+        labelValue: "1"
 
 monitoring:
   enabled: true
   alerts:
     email:
-      enabled: false # Change to true when wanting to test
+      enabled: false # Change to true when wanting to test - don't forget to test! Got some alerts we got to straighten out
       to: "carolynalcaraz2711@gmail.com"
       from: "democarolyn88@gmail.com"
       require_tls: true

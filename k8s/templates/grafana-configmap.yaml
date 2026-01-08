@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: grafana-configmap
+  namespace: {{ .Release.Namespace }}
+  labels:
+    grafana_dashboards: "1"
+data:
+  sms-frontend-overview.json: |
+  {{ (.Files.Get "dashboards/sms-frontend-overview.json") | indent 4 }} 
+  sms-decison.json: |
+  {{ (.Files.Get "dashboards/sms-decision.json") | indent 4 }} 

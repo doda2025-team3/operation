@@ -1,7 +1,6 @@
 - name: Set authorized key taken from file
   hosts: all
   become: true
-  gather_facts: true
   vars:
     ssh_key_dir: "public_keys"
     ssh_keys: "{{ lookup('fileglob', ssh_key_dir ~ '/*.pub', wantlist=True) }}"
@@ -82,6 +81,7 @@
         value: "1"
         state: present
         reload: yes
+
 
     # Step 8
     - name: Manage /etc/hosts
@@ -173,7 +173,8 @@
         name: kubelet
         state: started
         enabled: true
-        
+
+  
   handlers:
 
     - name: Restart containerd

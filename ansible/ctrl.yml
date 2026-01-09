@@ -11,7 +11,7 @@
   become: true
 
   tasks: 
-    #13
+    # Step 13
     - name: Check if it is already initialised
       ansible.builtin.stat:
         path: /etc/kubernetes/admin.conf
@@ -24,6 +24,8 @@
         --node-name ctrl
         --pod-network-cidr=10.244.0.0/16
       when: not kubeconfig.stat.exists
+      register: kubeadm_init
+      changed_when: not kubeconfig.stat.exists
 
     #14
     - name: Create .kube directory for vagrant user

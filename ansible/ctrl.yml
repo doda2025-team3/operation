@@ -6,7 +6,7 @@
 #         msg: "Install kube-apiserver, controller-manager, etcd, etc."
 
 - name: Setting up the Kubernetes Controller
-  hosts: controller
+  hosts: ctrl
   become: true
 
   tasks: 

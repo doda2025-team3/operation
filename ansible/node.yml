@@ -1,17 +1,38 @@
 - import_playbook: general.yml
 
-- hosts: all
+
+- name: Setting up Kubernetes Workers
+  hosts: all
+  become: true
+  gather_facts: true
   tasks:
     # 18 Getting the join command.
     - name: Create token on controller.
-      ansible.builtin.command: "kubeadm token create --print-join-command"
+      ansible.builtin.command: kubeadm token create --print-join-command
       delegate_to: ctrl
       run_once: true
-      register: join_token
-      become: yes
+      register: join_cmd
+      changed_when: false
+
+    - name: Check if node already joined
+      ansible.builtin.stat:
+        path: /etc/kubernetes/kubelet.conf
+      register: kubelet_conf
+
+    - name: Wait for API to be ready
+      ansible.builtin.wait_for:
+        host: 192.168.56.100
+        port: 6443
+        timeout: 180
+      when:
+        - inventory_hostname != "ctrl"
+        - not kubelet_conf.stat.exists
 
     # 19 Using the join command.
-    - name: Run command.
-      ansible.builtin.shell: "{{ join_token.stdout }}"
-      become: yes
-      when: inventory_hostname != 'ctrl'
+    - name: Run join command
+      ansible.builtin.shell: "timeout 180s {{ join_token.stdout }}"
+      args:
+        warn: false
+      when: 
+        - inventory_hostname != 'ctrl'
+        - not kubelet_conf.stat.exists

@@ -11,10 +11,11 @@ Vagrant.configure("2") do |config|
 #   config.vm.box = "bento/ubuntu-24.04"
 #   config.vm.box_version = "202510.26.0"
 
+  config.vm.box = "bento/ubuntu-24.04"
+
   config.vm.define "ctrl" do |ctrl|
 
     ctrl.vm.hostname = 'ctrl'
-    ctrl.vm.box = "bento/ubuntu-24.04"
     # ctrl.vm.box_version = "202510.26.0"
     ctrl.vm.network "private_network", ip: "192.168.56.100"
 
@@ -23,10 +24,20 @@ Vagrant.configure("2") do |config|
       v.cpus = 2
     end
 
-    ctrl.vm.provision :ansible do |ansible|
-      ansible.playbook = "ansible/ctrl.yml"
-      ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
-    end
+
+    # config.vm.provision "shell" do |s|
+    #   ssh_pub_key = File.readlines("/home/carolyn/Documents/doda2025/dodaProject/operation/ansible/public_keys/key_caro.pub").first.strip
+    #   s.inline = <<-SHELL
+    #     echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+    #     chmod 600 /home/vagrant/.ssh/authorized_keys
+    #     chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys
+    #   SHELL
+    # end
+
+    # ctrl.vm.provision :ansible do |ansible|
+    #   ansible.playbook = "ansible/ctrl.yml"
+    #   ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+    # end
 
   end
 
@@ -35,7 +46,6 @@ Vagrant.configure("2") do |config|
     config.vm.define "node-#{worker}" do |node|
 
       node.vm.hostname = "node-#{worker}"
-      node.vm.box = "bento/ubuntu-24.04"
       # node.vm.box_version = "202510.26.0"
       node.vm.network "private_network", ip: "192.168.56.#{100 + worker}"
       node.vm.provider "virtualbox" do |v|
@@ -43,13 +53,116 @@ Vagrant.configure("2") do |config|
         v.cpus = 2
       end
 
-      node.vm.provision :ansible do |ansible|
-        ansible.playbook = "ansible/node.yml"
-        ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
-      end
+      # node.vm.provision :ansible do |ansible|
+      #   ansible.playbook = "ansible/node.yml"
+      #   ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+      # end
+
+      # config.vm.provision "shell" do |s|
+      #   ssh_pub_key = File.readlines("/home/carolyn/Documents/doda2025/dodaProject/operation/ansible/public_keys/key_caro.pub").first.strip
+      #   s.inline = <<-SHELL
+      #     echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+      #     chmod 600 /home/vagrant/.ssh/authorized_keys
+      #     chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys
+      #   SHELL
+      # end
 
     end
   end
+
+  config.trigger.before :provision do |task|
+    task.name = "Generate inventory.cfg"
+    task.ruby do |_env, _machine|
+      File.open("inventory.cfg", "w") do |file|
+        file.puts "[controller]"
+        file.puts "\nctrl ansible_host=192.168.56.100 ansible_user=vagrant ansible_ssh_private_key_file='/home/carolyn/Documents/doda2025/dodaProject/operation/.vagrant/machines/ctrl/virtualbox/private_key'"
+
+        file.puts "\n[nodes]"
+        (1..number_of_workers).each do |worker|
+          file.puts "\nnode-#{worker} ansible_host=192.168.56.#{100 + worker} ansible_user=vagrant ansible_ssh_private_key_file='/home/carolyn/Documents/doda2025/dodaProject/operation/.vagrant/machines/node-#{worker}/virtualbox/private_key'"
+        end
+
+        file.puts "\n[all:vars]"
+        file.puts "\nansible_python_interpreter=/usr/bin/python3"
+        file.puts "\nNUM_WORKER_NODES=#{number_of_workers}"
+
+      end
+    end
+  end
+
+  config.vm.provision "ansible" do |ansible|
+
+    # File.open("inventory.cfg", "w") do |file|
+    #   file.puts "[controller]"
+    #   file.puts "\nctrl ansible_host=192.168.56.100 ansible_user=vagrant"
+
+    #   file.puts "\n[nodes]"
+    #   (1..number_of_workers).each do |worker|
+    #     file.puts "\nnode-#{worker} ansible_host=192.168.56.#{100 + worker} ansible_user=vagrant"
+    #   end
+
+    #   file.puts "\n[all:vars]"
+    #   file.puts "\nansible_python_interpreter=/usr/bin/python3"
+    #   file.puts "\nNUM_WORKER_NODES=#{number_of_workers}"
+
+    # end
+
+    ansible.playbook = "ansible/general.yml"
+    ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+    ansible.inventory_path = "inventory.cfg"
+  end
+
+  
+
+  config.vm.provision "ansible" do |ansible|
+
+    # File.open("inventory.cfg", "w") do |file|
+    #   file.puts "[controller]"
+    #   file.puts "\nctrl ansible_host=192.168.56.100 ansible_user=vagrant"
+
+    #   file.puts "\n[nodes]"
+    #   (1..number_of_workers).each do |worker|
+    #     file.puts "\nnode-#{worker} ansible_host=192.168.56.#{100 + worker} ansible_user=vagrant"
+    #   end
+
+    #   file.puts "\n[all:vars]"
+    #   file.puts "\nansible_python_interpreter=/usr/bin/python3"
+    #   file.puts "\nNUM_WORKER_NODES=#{number_of_workers}"
+
+    # end
+
+    ansible.playbook = "ansible/ctrl.yml"
+    ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+    ansible.limit = "ctrl"
+    ansible.inventory_path = "inventory.cfg"
+  end
+
+  
+  config.vm.provision "ansible" do |ansible|
+
+    # File.open("inventory.cfg", "w") do |file|
+    #   file.puts "[controller]"
+    #   file.puts "\nctrl ansible_host=192.168.56.100 ansible_user=vagrant"
+
+    #   file.puts "\n[nodes]"
+    #   (1..number_of_workers).each do |worker|
+    #     file.puts "\nnode-#{worker} ansible_host=192.168.56.#{100 + worker} ansible_user=vagrant"
+    #   end
+
+    #   file.puts "\n[all:vars]"
+    #   file.puts "\nansible_python_interpreter=/usr/bin/python3"
+    #   file.puts "\nNUM_WORKER_NODES=#{number_of_workers}"
+
+    # end
+
+    ansible.playbook = "ansible/node.yml"
+    ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
+    ansible.inventory_path = "inventory.cfg"
+    ansible.limit = "node-*"
+  end
+
+
+
 
 
 

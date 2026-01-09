@@ -75,11 +75,11 @@ Vagrant.configure("2") do |config|
     task.ruby do |_env, _machine|
       File.open("inventory.cfg", "w") do |file|
         file.puts "[controller]"
-        file.puts "\nctrl ansible_host=192.168.56.100 ansible_user=vagrant ansible_ssh_private_key_file='/home/carolyn/Documents/doda2025/dodaProject/operation/.vagrant/machines/ctrl/virtualbox/private_key'"
+        file.puts "\nctrl ansible_host=192.168.56.100 ansible_user=vagrant ansible_ssh_private_key_file=/home/carolyn/Documents/doda2025/dodaProject/operation/.vagrant/machines/ctrl/virtualbox/private_key"
 
         file.puts "\n[nodes]"
         (1..number_of_workers).each do |worker|
-          file.puts "\nnode-#{worker} ansible_host=192.168.56.#{100 + worker} ansible_user=vagrant ansible_ssh_private_key_file='/home/carolyn/Documents/doda2025/dodaProject/operation/.vagrant/machines/node-#{worker}/virtualbox/private_key'"
+          file.puts "\nnode-#{worker} ansible_host=192.168.56.#{100 + worker} ansible_user=vagrant ansible_ssh_private_key_file=/home/carolyn/Documents/doda2025/dodaProject/operation/.vagrant/machines/node-#{worker}/virtualbox/private_key"
         end
 
         file.puts "\n[all:vars]"

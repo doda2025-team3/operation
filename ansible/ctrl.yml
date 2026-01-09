@@ -50,7 +50,7 @@
         src: /etc/kubernetes/admin.conf
         dest: /vagrant/kubeconfig
         remote_src: yes
-        mode: '0600'
+        mode: '0600' #0644
 
     # Step 15
     # - name: Download Flannel manifest
@@ -101,12 +101,9 @@
         state: present
         filename: helm-stable-debian
 
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: yes
-
     - name: Install Helm
       ansible.builtin.apt:
         name: helm
         state: present
+        update_cache: yes
         

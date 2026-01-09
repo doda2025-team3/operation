@@ -20,7 +20,7 @@
     - name: Initialize Kubernetes cluster with kubeadm
       ansible.builtin.command: >
         kubeadm init
-        --apiserver-advertise-address=192.168.56.100
+        --apiserver-advertise-address=192.168.56.150
         --node-name ctrl
         --pod-network-cidr=10.244.0.0/16
       when: not kubeconfig.stat.exists

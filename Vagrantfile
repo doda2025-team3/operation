@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
 
     ctrl.vm.hostname = 'ctrl'
     ctrl.vm.box = "bento/ubuntu-24.04"
-    ctrl.vm.box_version = "202510.26.0"
+    # ctrl.vm.box_version = "202510.26.0"
     ctrl.vm.network "private_network", ip: "192.168.56.100"
 
     ctrl.vm.provider "virtualbox" do |v|
@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
 
       node.vm.hostname = "node-#{worker}"
       node.vm.box = "bento/ubuntu-24.04"
-      node.vm.box_version = "202510.26.0"
+      # node.vm.box_version = "202510.26.0"
       node.vm.network "private_network", ip: "192.168.56.#{100 + worker}"
       node.vm.provider "virtualbox" do |v|
         v.memory = 6144

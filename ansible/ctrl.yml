@@ -6,7 +6,7 @@
 #       debug:
 #         msg: "Install kube-apiserver, controller-manager, etcd, etc."
 
-- name: Setup kubernetes
+- name: Seting up the Kubernetes Controller
   hosts: ctrl
   become: true
 
@@ -66,7 +66,7 @@
         url: https://raw.githubusercontent.com/flannel-io/flannel/v0.26.7/Documentation/kube-flannel.yml
         dest: /tmp/kube-flannel.yml
         owner: root
-        group: roor
+        group: root
         mode: '0644'
 
     # - name: Patch Flannel to use eth1 
@@ -83,10 +83,21 @@
     - name: Apply Flannel manifest
       ansible.builtin.command: kubectl apply -f /tmp/kube-flannel.yml
       become_user: vagrant
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
       register: flannel_apply
       changed_when: >
         ('created' in flannel_apply.stdout) or
         ('configured' in flannel_apply.stdout)
+
+    - name: Check Flannel DaemonSet exists
+      ansible.builtin.command: kubectl -n kube-flannel get ds kube-flannel-ds
+      become_user: vagrant
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+      register: flannel_ds_check
+      changed_when: false
+
 
     # Step 16
     - name: Add Helm GPG key

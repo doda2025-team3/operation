@@ -88,7 +88,7 @@
         ('created' in flannel_apply.stdout) or
         ('configured' in flannel_apply.stdout)
 
-    #16
+    # Step 16
     - name: Add Helm GPG key
       ansible.builtin.get_url:
         url: https://packages.buildkite.com/helm-linux/helm-debian/gpgkey
@@ -106,4 +106,16 @@
         name: helm
         state: present
         update_cache: yes
+
+    # Step 17
+    - name: Check Helm plugins
+      ansible.builtin.command: helm plugin list
+      become_user: vagrant
+      register: helm_plugins
+      changed_when: yes
+
+    - name: Install Helm plugin
+      ansible.builtin.command: helm plugin install https://github.com/databus23/helm-diff
+      become_user: vagrant
+      when: "'diff' not in helm_plugins.stdout"
         

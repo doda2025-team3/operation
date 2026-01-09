@@ -10,7 +10,7 @@ spec:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: sms-checker
+      app: app
       component: frontend
   endpoints:
     - port: http

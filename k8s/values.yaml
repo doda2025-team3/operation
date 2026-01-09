@@ -11,33 +11,45 @@ model:
 ingress:
   enabled: true
   host: "operation.local"
+  className: "nginx"
+  stableHost: "operation.local"
+  canaryHost: "operation-canary.local"
+  path: /
 
 kube-prometheus-stack:
   prometheus:
     prometheusSpec:
       serviceMonitorSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
       podMonitorSelector: {}
   alertmanager:
     alertmanagerSpec:
       alertmanagerConfigSelector: {}
+      alertmanagerConfigNamespaceSelector: {}
   grafana:
     enabled: true
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboards
+        labelValue: "1"
 
 monitoring:
   enabled: true
   alerts:
     email:
-      enabled: true
+      enabled: false # Change to true when wanting to test - don't forget to test! Got some alerts we got to straighten out
       to: "carolynalcaraz2711@gmail.com"
-      from: "alertmanager@example.com"
-      require_tls: false
-      smarthost: "mailhog:1025"
+      from: "democarolyn88@gmail.com"
+      require_tls: true
+      smarthost: "smtp.gmail.com:587"
       username: ""
       password: ""
       passwordName: "alertmanager-secret-password"
 
 
 config:
+  logLevel: "LEVEL"
   extraConfig: |
     # Add optional config here
 
@@ -50,4 +62,4 @@ secret:
 sharedVolume:
   enabled: true
   hostPath: "/mnt/shared"
-  mountPath: "/models"
+  mountPath: "/app/output"

@@ -8,6 +8,10 @@ spec:
   route:
     receiver: "alerts-email"
     groupBy: ["alertname"]
+    # Testing values:
+    # groupWait: 5s
+    # groupInterval: 30s
+    # repeatInterval: 1m
     groupWait: 30s
     groupInterval: 2m
     repeatInterval: 4h

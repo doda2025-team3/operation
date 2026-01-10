@@ -83,7 +83,7 @@ Vagrant.configure("2") do |config|
         end
 
         file.puts "\n[all:vars]"
-        file.puts "\nansible_python_interpreter=/usr/bin/python3"
+        file.puts "\nansible_python_interpreter=/opt/ansible-k8s-venv/bin/python"
         file.puts "\nNUM_WORKER_NODES=#{number_of_workers}"
 
       end
@@ -110,6 +110,7 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "ansible/general.yml"
     ansible.extra_vars = {"NUM_WORKER_NODES" => number_of_workers}
     ansible.inventory_path = "inventory.cfg"
+    ansible.limit = "all"
   end
 
   

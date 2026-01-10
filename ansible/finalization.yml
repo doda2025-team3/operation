@@ -4,12 +4,31 @@
 - name: Finalize Kubernetes Cluster
   hosts: all
   become: yes
-  gather_facts: no
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /opt/ansible-k8s-venv/bin/python
 
   environment:
     KUBECONFIG: /etc/kubernetes/admin.conf
 
   tasks:
+
+    - name: Install Python dependencies
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+          - python3-venv
+        state: present
+        update_cache: yes
+
+    - name: Create Ansible Kubernetes venv
+      ansible.builtin.command: python3 -m venv /opt/ansible-k8s-venv
+      args:
+        creates: /opt/ansible-k8s-venv/bin/python
+
+    - name: Install kubernetes library
+      ansible.builtin.command: >
+        /opt/ansible-k8s-venv/bin/pip install --upgrade pip kubernetes pyyaml
 
     # Step 20.1 - Install MetalLB CRDs
     - name: Install MetalLB CRDs
@@ -25,17 +44,29 @@
         --for=condition=ready pod
         --timeout=180s
 
+    - name: Copy MetalLb IPAddressPool
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/installers/metallb-ip-pool.yml"
+        dest: /tmp/metallb-ip-pool.yml
+        mode: "0644"
+
+    - name: Copy MetalLb L2Advertisement
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/installers/metallb-l2.yml"
+        dest: /tmp/metallb-l2.yml
+        mode: "0644"
+
     # Step 20.3 - IPAddressPool
     - name: Apply IPAddressPool
-      command: kubectl apply -f {{ playbook_dir }}/installers/metallb-ip-pool.yml
+      command: kubectl apply -f /tmp/metallb-ip-pool.yml
 
     # Step 20.4 - L2Advertisement
     - name: Apply L2Advertisement
-      command: kubectl apply -f {{ playbook_dir }}/installers/metallb-l2.yml
+      command: kubectl apply -f /tmp/metallb-l2.yml
 
     # Step 21.1 - Add Helm repo
     - name: Add Helm repo for ingress-nginx
-      community.kubernetes.helm_repository:
+      kubernetes.core.helm_repository:
         name: ingress-nginx
         repo_url: https://kubernetes.github.io/ingress-nginx
       run_once: true
@@ -45,13 +76,165 @@
       command: helm repo update
       run_once: true
 
+    - name: Copy Ingress Values
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/installers/ingress-values.yml"
+        dest: /tmp/ingress-values.yml
+        mode: "0644"
+
     # Step 21.3 - Install Nginx
     - name: Install NGINX Ingress Controller
-      community.kubernetes.helm:
+      kubernetes.core.helm:
         name: ingress-nginx
         chart_ref: ingress-nginx/ingress-nginx
         release_namespace: ingress-nginx
         create_namespace: true
-        values_file: "{{ playbook_dir }}/installers/ingress-values.yml"
+        values_files: 
+          - /tmp/ingress-values.yml
         state: present
       run_once: true
+
+    # Step 22
+    - name: Add Kubernetes dashboard
+      ansible.builtin.command: helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+      register: kube_dashboard
+      failed_when: kube_dashboard.rc != 0 and ("already exists" not in (kube_dashboard.stderr | default('')))
+
+    - name: Update Helm Repositories
+      ansible.builtin.command: helm repo update
+
+    - name: Install Kubernetes dashboard
+      kubernetes.core.helm:
+        name: kubernetes-dashboard
+        chart_ref: kubernetes-dashboard/kubernetes-dashboard
+        release_namespace: kubernetes-dashboard
+        create_namespace: true
+        update_repo_cache: true
+        wait: true
+        wait_timeout: 300s
+        state: present
+        kubeconfig: /etc/kubernetes/admin.conf
+      run_once: true
+
+    - name: Copy Dashboard admin-user
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/installers/dashboard-admin-user.yml"
+        dest: /tmp/dashboard-admin-user.yml
+        mode: "0644"
+
+    - name: Copy Dashboard ingress
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/installers/dashboard-ingress.yml"
+        dest: /tmp/dashboard-ingress.yml
+        mode: "0644"
+
+    - name: Apply Dashboard admin-user
+      kubernetes.core.k8s:
+        kubeconfig: /etc/kubernetes/admin.conf
+        state: present
+        src: /tmp/dashboard-admin-user.yml
+
+    - name: Apply Dashboard ingress
+      kubernetes.core.k8s:
+        kubeconfig: /etc/kubernetes/admin.conf
+        state: present
+        src: /tmp/dashboard-ingress.yml
+    
+    # - name: Create dashboard token
+    #   ansible.builtin.command: kubectl -n kubernetes-dashboard create token admin-user
+    #   environment:
+    #     KUBECONFIG: /etc/kubernetes/admin.conf
+    #   register: dashboard_token
+    #   changed_when: false
+
+    # Step 23
+    - name: Install dependencies for Istio
+      ansible.builtin.apt:
+        name:
+          - curl
+          - tar
+        state: present
+        update_cache: true
+
+    - name: Create working directory
+      ansible.builtin.file:
+        path: /home/vagrant/istio
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: "0755"
+
+    - name: Download Istio (amd)
+      ansible.builtin.get_url:
+        url: "https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz"
+        dest: /home/vagrant/istio/istio-1.25.2-linux-amd64.tar.gz
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+      when: ansible_facts['architecture'] in ["x86_64", "amd64"]
+
+    - name: Download Istio (arm)
+      ansible.builtin.get_url:
+        url: "https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-arm64.tar.gz"
+        dest: /home/vagrant/istio/istio-1.25.2-linux-arm64.tar.gz
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+      when: ansible_facts['architecture'] in ["aarch64", "arm64"]
+
+    - name: Extract Istio (amd)
+      ansible.builtin.unarchive:
+        src: /home/vagrant/istio/istio-1.25.2-linux-amd64.tar.gz
+        dest: /usr/local/bin
+        remote_src: true
+        extra_opts:
+          - --strip-components=2
+          - istio-1.25.2/bin/istioctl
+      when: ansible_facts['architecture'] in ["x86_64", "amd64"]
+
+    - name: Extract Istio (arm)
+      ansible.builtin.unarchive:
+        src: /home/vagrant/istio/istio-1.25.2-linux-arm64.tar.gz
+        dest: /usr/local/bin
+        remote_src: true
+        extra_opts:
+          - --strip-components=2
+          - istio-1.25.2/bin/istioctl
+      when: ansible_facts['architecture'] in ["aarch64", "arm64"]
+
+    - name: Ensure istioctl is executable
+      ansible.builtin.file:
+        path: /usr/local/bin/istioctl
+        state: file
+        mode: "0755"
+
+    - name: Copy IstioOperator
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/installers/istio-operator.yml"
+        dest: /home/vagrant/istio/istio-operator.yml
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+
+    - name: Install Istio control
+      ansible.builtin.command: istioctl install -y -f /home/vagrant/istio/istio-operator.yml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Wait for Istio to be ready  
+      ansible.builtin.command: kubectl -n istio-system wait --for=condition=available deployment/istiod --timeout=180s
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Wait for external IP of istio-ingressgateways
+      ansible.builtin.shell: |
+        kubectl -n istio-system get svc istio-ingressgateway \
+        -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      register: istio_ip
+      retries: 20
+      delay: 10
+      until: istio_ip.stdout != ""
+      changed_when: false
+    

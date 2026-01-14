@@ -2,7 +2,7 @@
 # 20 & 21: It can be run like this: ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml
 
 - name: Finalize Kubernetes Cluster
-  hosts: all
+  hosts: controller
   become: yes
   gather_facts: true
   vars:

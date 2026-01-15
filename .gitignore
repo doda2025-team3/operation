@@ -1,4 +1,5 @@
 .vagrant/
+.vagrant.bak/
 kubeconfig
 values.local.yaml
 k8s/istio-1.28.2/

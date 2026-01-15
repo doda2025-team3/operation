@@ -4,3 +4,5 @@ kubeconfig
 values.local.yaml
 k8s/istio-1.28.2/
 models
+istio-1.28.2/
+k8s/values.local.yaml

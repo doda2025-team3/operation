@@ -4,15 +4,26 @@ kind: Ingress
 metadata:
   name: operation-ingress
 spec:
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - host: {{ .Values.ingress.host }}
+    - host: {{ .Values.ingress.stableHost }}
       http:
         paths:
-          - path: /
+          - path: {{ .Values.ingress.path | quote }}
             pathType: Prefix
             backend:
               service:
                 name: app
                 port:
-                  number: {{ .Values.app.port }}
+                  number: 80
+    - host: {{ .Values.ingress.canaryHost }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 80
 {{- end }}

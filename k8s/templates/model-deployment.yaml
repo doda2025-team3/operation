@@ -20,13 +20,17 @@ spec:
           env:
             - name: MODEL_PORT
               value: "{{ .Values.model.port }}"
+            - name: MODEL_DIR
+              value: "/app/output" 
             - name: MODEL_PATH
-              value: "/models/model.joblib"
-            - name: MODEL_URL
-              value: "none"
+              value: "/app/output/model.joblib"
+            # - name: MODEL_URL
+            #   value: "{{ .Values.model.MODEL_URL }}"
           volumeMounts:
-            - name: model-volume
-              mountPath: /models
+            - name: shared-volume
+              mountPath: {{ .Values.sharedVolume.mountPath | quote }}
       volumes:
-        - name: model-volume
-          emptyDir: {}
+        - name: shared-volume
+          hostPath:
+            path: {{ .Values.sharedVolume.hostPath | quote }}
+            type: DirectoryOrCreate

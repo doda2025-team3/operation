@@ -1,5 +1,3 @@
-- Name: Ieva Mockaitytė
-Username: schnurchen
 
 ### Week Q2.1 (Nov 10+)
 
@@ -29,6 +27,7 @@ Followed lectures, did the self-tests. Worked on F10.
   - Attended the lectures and the lab
   - Continued working on F1 and F2
   - Helped the work of F11
+  - https://github.com/doda2025-team3/lib-version/pull/1
 
 - Ieva: https://github.com/doda2025-team3/lib-version/pull/2
 I worked on F11 - I fully completed the pre-release part on branches other than main; I was helped with the main branch stable release part.
@@ -45,6 +44,8 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 - Daniel:
   - Attended the lectures and the lab
   - Worked on A2 1-5
+  - I accidentally pushed this week directly to main, my push can be found here:
+  - https://github.com/doda2025-team3/operation/compare/68cc2576e18acc63ca359fac6a5bd714731b59ab...73e70d47090e524beb8689a6f89aa04b4f917b92
  
 - Gabriel: https://github.com/doda2025-team3/operation/pull/5
   - Went through a pull request and implemented steps 18 and 19.
@@ -59,6 +60,12 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 ### Week Q2.4 (Dec 1+)
 
+- Daniel:
+  - Attended the lectures and the lab
+  - Worked on A3 enabling monitoring
+  - https://github.com/doda2025-team3/model-service/pull/6
+  - https://github.com/doda2025-team3/app/pull/4
+  - https://github.com/doda2025-team3/operation/pull/9
 - Carolyn: https://github.com/doda2025-team3/operation/pull/11
   Worked on adding to Helm Chart and fixed issue with the model.
 - Alex: https://github.com/doda2025-team3/operation/pull/8
@@ -66,9 +73,24 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 - Gabriel: https://github.com/doda2025-team3/app/pull/5
   Went over the comments from the previous assignments and thought about how to add everything.
   Added using lib-version to app, which was one of the comments.
+  Went over merge request for monitoring within app.
   Began with adding missing things to A2 to improve the scores on the rubric.
+- Ieva: https://github.com/doda2025-team3/operation/pull/12
+  Finished my task 13 from the previous week. Added other missing steps (14-16)
 
 ### Week Q2.5 (Dec 8+)
+
+- Carolyn: https://github.com/doda2025-team3/operation/pull/16
+  Worked on AlertManager aspect leftover from Assignment 3
+- Gabriel: https://github.com/doda2025-team3/operation/pull/14
+  Went over and analysed multiple pull requests in operation and model-service. (https://github.com/doda2025-team3/model-service/pull/7, https://github.com/doda2025-team3/model-service/pull/5 and https://github.com/doda2025-team3/operation/pull/11)
+  I edited the model-service to create a model when there isn't any in the volume.
+  I added helm plugin in ctrl.
+  I edited the node vagrant to be more robust.
+  Studied about istio implementation.
+- Alex
+- Started working on a use case
+  
 
 
 ### Week Q2.6 (Dec 15+)

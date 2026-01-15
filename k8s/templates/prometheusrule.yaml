@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: app-alerts
+  labels:
+    release: {{ .Release.Name }}
+spec:
+  groups:
+    - name: operation.rules
+      rules:
+        - alert: HighRequestRate
+          expr: sum(rate(sms_predictions_total[1m])) * 60 > 15
+          for: 2m
+          labels:
+            severity: warning
+            namespace: {{ .Release.Namespace }}
+          annotations:
+            summary: "High request rate on {{ `{{ $labels.instance }}` }}"
+            description: >
+              Service received more than 15 HTTP requests/minute for >= 2 minutes.

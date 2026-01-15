@@ -1,11 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: model-service
+  labels:
+    app: model-service
+    component: backend
+  name: {{ .Values.model.serviceName }}
 spec:
   type: ClusterIP
   selector:
     app: model-service
   ports:
-    - port: {{ .Values.model.port }}
+    - name: http
+      port: {{ .Values.model.port }}
       targetPort: {{ .Values.model.port }}

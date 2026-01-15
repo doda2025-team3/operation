@@ -1,5 +1,5 @@
 # Step 20-21
-# 20 & 21: It can be run like this: ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml
+# 20 & 21: It can be run like this: ansible-playbook -i inventory.cfg ./ansible/finalization.yml
 
 - name: Setup Python environment
   hosts: controller

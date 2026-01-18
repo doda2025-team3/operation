@@ -1,5 +1,7 @@
 app:
   image: "ghcr.io/doda2025-team3/app:latest"
+  v1Image: "ghcr.io/doda2025-team3/app@sha256:067dec64c73628a10c1d37f6f08dd7edb7f6d3b408ccc5cb3cac3b8a3ab55df9"
+  v2Image: "ghcr.io/doda2025-team3/app:0.0.2"
   port: 8080
 
 model:

@@ -17,10 +17,19 @@ spec:
             subset: v1
             port:
               number: {{ .Values.app.port }}
-          weight: 90
+          weight: 100
+          headers:
+            response:
+              add:
+                x-app-version: v1
         - destination:
             host: app
             subset: v2
             port:
               number: {{ .Values.app.port }}
-          weight: 10
+          weight: 0
+          headers:
+            response:
+              add:
+                x-app-version: v2
+

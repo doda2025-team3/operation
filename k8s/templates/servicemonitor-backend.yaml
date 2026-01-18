@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "sms-checker.fullname" . }}-backend
+  name: app-backend
 spec:
   namespaceSelector:
     matchNames:

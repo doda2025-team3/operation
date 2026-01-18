@@ -106,4 +106,4 @@ Add the IP address to /etc/hosts.
 ```bash
 echo "192.168.56.95 operation.local operation-canary.local" | sudo tee -a /etc/hosts
 ```
-Open the link (http://operation.local/sms/)
+Open the link (http://operation.local/sms/) to access the frontend of the application. 

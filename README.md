@@ -102,8 +102,8 @@ helm upgrade --install myapp ./k8s
 ```
 
 The app can then be accessed by following the steps below:
-Add the IP address to /etc/hosts.
+- Add the IP address to /etc/hosts.
 ```bash
 echo "192.168.56.95 operation.local operation-canary.local" | sudo tee -a /etc/hosts
 ```
-Open the link (http://operation.local/sms/) to access the frontend of the application. 
+- Open the link (http://operation.local/sms/) to access the frontend of the application. 

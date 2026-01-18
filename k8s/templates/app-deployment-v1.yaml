@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: {{ .Values.app.image }}
+          image: {{ .Values.app.v1Image }}
           ports:
             - name: http
               containerPort: {{ .Values.app.port }}

@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: {{ .Values.app.image }}
+          image: {{ .Values.app.v2Image }}
           ports:
             - containerPort: {{ .Values.app.port }}
           env:

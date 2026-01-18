@@ -22,11 +22,11 @@ spec:
               number: {{ .Values.app.port }}
 
     - match:
-      - headers:
-          cookie:
-            regex: "^(.*;)?(experiment=v2)(;.*)?$"
-        uri: 
-          prefix: /
+        - headers:
+            cookie:
+              regex: "^(.*;)?(experiment=v2)(;.*)?$"
+          uri: 
+            prefix: /
       route:
         - destination:
             host: app
@@ -36,14 +36,14 @@ spec:
               
     - match:
         - uri:
-          prefix: /
+            prefix: /
       route:
         - destination:
             host: app
             subset: v1
             port:
               number: {{ .Values.app.port }}
-          weight: 90
+          weight: 70
           headers:
             response:
               add:
@@ -53,7 +53,7 @@ spec:
             subset: v2
             port:
               number: {{ .Values.app.port }}
-          weight: 10
+          weight: 30
           headers:
             response:
               add:

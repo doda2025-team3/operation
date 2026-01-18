@@ -9,7 +9,10 @@ spec:
     - "*"
   http:
     - match:
-        - uri:
+        - headers:
+            cookie:
+              regex: "^(.*;)?(experiment=v1)(;.*)?$"
+          uri:
             prefix: /
       route:
         - destination:
@@ -17,10 +20,41 @@ spec:
             subset: v1
             port:
               number: {{ .Values.app.port }}
+
+    - match:
+      - headers:
+          cookie:
+            regex: "^(.*;)?(experiment=v2)(;.*)?$"
+        uri: 
+          prefix: /
+      route:
+        - destination:
+            host: app
+            subset: v2
+            port:
+              number: {{ .Values.app.port }}
+              
+    - match:
+        - uri:
+          prefix: /
+      route:
+        - destination:
+            host: app
+            subset: v1
+            port:
+              number: {{ .Values.app.port }}
           weight: 90
+          headers:
+            response:
+              add:
+                set-cookie: "experiment=v1; Path=/; Max-Age=86400"
         - destination:
             host: app
             subset: v2
             port:
               number: {{ .Values.app.port }}
           weight: 10
+          headers:
+            response:
+              add:
+                set-cookie: "experiment=v2; Path=/; Max-Age=86400"

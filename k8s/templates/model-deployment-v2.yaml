@@ -5,6 +5,8 @@ metadata:
   labels:
     app: model-service
     version: v2
+    sms-checker: "true"
+    component: backend
 spec:
   replicas: 1
   selector:
@@ -16,6 +18,8 @@ spec:
       labels:
         app: model-service
         version: v2
+        sms-checker: "true"
+        component: backend
     spec:
       containers:
         - name: model-service

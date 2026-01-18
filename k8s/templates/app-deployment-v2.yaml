@@ -5,6 +5,8 @@ metadata:
   labels:
     app: app
     version: v2
+    sms-checker: "true"
+    component: frontend
 spec:
   replicas: 1
   selector:
@@ -16,6 +18,8 @@ spec:
       labels:
         app: app
         version: v2
+        sms-checker: "true"
+        component: frontend
     spec:
       containers:
         - name: app

@@ -17,7 +17,8 @@ ingress:
   stableHost: "operation.local"
   canaryHost: "operation-canary.local"
   path: /
-
+istio:
+  ingressGatewayLabel: ingressgateway
 kube-prometheus-stack:
   prometheus:
     prometheusSpec:

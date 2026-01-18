@@ -19,9 +19,13 @@ spec:
               number: {{ .Values.app.port }}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6aab31f (Open two frontend images.)
           weight: 100
+=======
+          weight: 70
+>>>>>>> a6b987e (Frontend balancing.)
           headers:
             response:
               add:
@@ -39,9 +43,13 @@ spec:
               number: {{ .Values.app.port }}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6aab31f (Open two frontend images.)
           weight: 0
+=======
+          weight: 30
+>>>>>>> a6b987e (Frontend balancing.)
           headers:
             response:
               add:

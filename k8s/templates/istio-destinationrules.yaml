@@ -6,6 +6,8 @@ spec:
   host: app
 <<<<<<< HEAD
   trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
     loadBalancer:
       consistentHash:
         httpHeaderName: user

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: app
   labels:
-    app: sms-checker
+    app: app
     component: frontend
 spec:
   type: ClusterIP

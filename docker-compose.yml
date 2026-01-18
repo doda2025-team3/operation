@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/doda2025-team3/app:${TAG_VERSION:-latest}
+    image: ${APP_IMAGE}:${APP_VERSION:-latest}
     container_name: app
     restart: unless-stopped
     ports:
@@ -13,13 +13,15 @@ services:
 
 
   model-service:
-    image: ghcr.io/doda2025-team3/model-service:${TAG_VERSION:-latest}
+    image: ${MODEL_IMAGE}:${MODEL_VERSION:-latest}
+    # image: model-service:local
     container_name: model-service
     restart: unless-stopped
     ports:
       - "${MODEL_PORT:-8081}:8081"
     environment:
       MODEL_PORT: "${MODEL_PORT:-8081}"
-      MODEL_DIR: "${MODEL_DIR:-/models}"
+      MODEL_PATH: "/models/model.joblib"
+      MODEL_URL: "${MODEL_URL:-}"
     volumes:
       - ./models:/models

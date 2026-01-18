@@ -8,32 +8,58 @@ model:
   serviceName: "model-service"
   MODEL_URL: "https://github.com/doda2025-team3/model-service/releases/latest/download/model.joblib"
 
-
 ingress:
   enabled: true
   host: "operation.local"
+  className: "nginx"
+  stableHost: "operation.local"
+  canaryHost: "operation-canary.local"
+  path: /
 
 kube-prometheus-stack:
   prometheus:
     prometheusSpec:
       serviceMonitorSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
       podMonitorSelector: {}
+  alertmanager:
+    alertmanagerSpec:
+      alertmanagerConfigSelector: {}
+      alertmanagerConfigNamespaceSelector: {}
   grafana:
     enabled: true
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboards
+        labelValue: "1"
+
+monitoring:
+  enabled: true
+  alerts:
+    email:
+      enabled: false # Change to true when wanting to test - don't forget to test! Got some alerts we got to straighten out
+      to: "carolynalcaraz2711@gmail.com"
+      from: "democarolyn88@gmail.com"
+      require_tls: true
+      smarthost: "smtp.gmail.com:587"
+      username: ""
+      password: ""
+      passwordName: "alertmanager-secret-password"
+
 
 config:
+  logLevel: "LEVEL"
   extraConfig: |
     # Add optional config here
 
 secret:
-  enabled: false
-  username: "admin"
-  password: "admin123"
+  enabled: true
+  name: operation-credentials
+  username: ""
+  password: ""
 
 sharedVolume:
   enabled: true
   hostPath: "/mnt/shared"
-  mountPath: "/models"
-
-istio:
-  ingressGatewayLabel: ingressgateway
+  mountPath: "/app/output"

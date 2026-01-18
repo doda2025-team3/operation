@@ -22,8 +22,8 @@ docker compose up --pull always
 
 This command ensures that the latest version of the images are pulled before deploying.
 
-- The frontend of the application can then be accessed via [http://localhost:8080/sms] (http://localhost:8080/sms)
-- The backend of the application can be accessed via [http://localhost:8081] (http://localhost:8081)
+- The frontend of the application can then be accessed via (http://localhost:8080/sms)
+- The backend of the application can be accessed via (http://localhost:8081)
 
 ## Versioning
 In order to change the version for the app image, change the project version in the [pom.xml] file and push the change onto main. This will automatically trigger the workflow. 
@@ -106,4 +106,4 @@ Add the IP address to /etc/hosts.
 ```bash
 echo "192.168.56.95 operation.local operation-canary.local" | sudo tee -a /etc/hosts
 ```
-Open the link [http://operation.local/sms/] (http://operation.local/sms/)
+Open the link (http://operation.local/sms/)

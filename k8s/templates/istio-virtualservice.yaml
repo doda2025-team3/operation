@@ -18,26 +18,38 @@ spec:
             port:
               number: {{ .Values.app.port }}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6aab31f (Open two frontend images.)
           weight: 100
           headers:
             response:
               add:
                 x-app-version: v1
+<<<<<<< HEAD
 =======
           weight: 90
 >>>>>>> 4e46853 (Added the A4 traffic management part)
+=======
+>>>>>>> 6aab31f (Open two frontend images.)
         - destination:
             host: app
             subset: v2
             port:
               number: {{ .Values.app.port }}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6aab31f (Open two frontend images.)
           weight: 0
           headers:
             response:
               add:
                 x-app-version: v2
 
+<<<<<<< HEAD
 =======
           weight: 10
 >>>>>>> 4e46853 (Added the A4 traffic management part)
+=======
+>>>>>>> 6aab31f (Open two frontend images.)

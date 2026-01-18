@@ -45,8 +45,12 @@ spec:
     spec:
       containers:
         - name: app
+<<<<<<< HEAD
           image: {{ .Values.app.image }}
 >>>>>>> 4e46853 (Added the A4 traffic management part)
+=======
+          image: {{ .Values.app.v2Image }}
+>>>>>>> 6aab31f (Open two frontend images.)
           ports:
             - containerPort: {{ .Values.app.port }}
           env:

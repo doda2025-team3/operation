@@ -29,6 +29,7 @@ spec:
       containers:
         - name: app
           image: {{ .Values.app.v1Image }}
+<<<<<<< HEAD
 =======
 <<<<<<<< HEAD:k8s/templates/app-deployment-v2.yaml
         version: v2
@@ -40,6 +41,8 @@ spec:
         - name: app
           image: {{ .Values.app.v2Image }}
 >>>>>>> 4e46853 (Added the A4 traffic management part)
+=======
+>>>>>>> 6aab31f (Open two frontend images.)
           ports:
             - containerPort: {{ .Values.app.port }}
           env:

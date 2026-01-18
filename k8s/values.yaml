@@ -63,3 +63,6 @@ sharedVolume:
   enabled: true
   hostPath: "/mnt/shared"
   mountPath: "/app/output"
+
+istio:
+  ingressGatewayLabel: ingressgateway

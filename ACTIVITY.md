@@ -94,10 +94,10 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 
 ### Week Q2.6 (Dec 15+)
-- Gabriel: https://github.com/doda2025-team3/operation/pull/5
-  Implemented the join command.
+- Gabriel:
   Debugged the join command because it got stuck on joining.
   Continued with the continous experimentation.
+  Continued with additional Use Case
   Went over the criteria for each assignment and noted how to improve each.
   
 
@@ -106,7 +106,7 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   Went over multiple pull requests (https://github.com/doda2025-team3/operation/pull/18, https://github.com/doda2025-team3/operation/pull/19)
   Further debugged the join command.
   Added a fix for the join command.
-  Began with additional Use Case
+  Continued with additional Use Case
   Added aditional use case for limiting number of requests.
 
 ### Week Q2.8 (Jan 15+)

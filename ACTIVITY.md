@@ -99,6 +99,9 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   Continued with the continous experimentation.
   Continued with additional Use Case
   Went over the criteria for each assignment and noted how to improve each.
+
+- Carolyn: https://github.com/doda2025-team3/app/pull/6
+  Worked on bringing assignment 1 to try for the excellent category
   
 
 ### Week Q2.7 (Jan 5+)
@@ -109,12 +112,19 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   Continued with additional Use Case
   Added aditional use case for limiting number of requests.
 
-### Week Q2.8 (Jan 15+)
+- Carolyn: https://github.com/doda2025-team3/operation/pull/17
+  Worked on bringing assignment 2 to try for the excellent category
+
+### Week Q2.8 (Jan 12+)
 - Gabriel: https://github.com/doda2025-team3/operation/pull/22
   Went over multiple pull requests (https://github.com/doda2025-team3/operation/pull/18, https://github.com/doda2025-team3/operation/pull/19)
   Continued with the continous experimentation.
   Added showing two frontend versions.
   Added a branch for green button within the frontend, and made an image for the branch.
+  
+- Carolyn: https://github.com/doda2025-team3/operation/pull/23
+  Worked on integrating traffic management to the main branch, as well as implemented sticky sessions. Fixed some aspects of traffic management as well.
+  Updated the README file.
 
 ### Week Q2.9 (Jan 19+)
 - Gabriel:

@@ -5,6 +5,8 @@ metadata:
   labels:
     app: model-service
     version: v1
+    sms-checker: "true"
+    component: backend
 spec:
   replicas: 1
   selector:
@@ -16,6 +18,12 @@ spec:
       labels:
         app: model-service
         version: v1
+        sms-checker: "true"
+        component: backend
+        istio.io/rev: default
+
+      annotations:
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: model-service
@@ -25,12 +33,10 @@ spec:
           env:
             - name: MODEL_PORT
               value: "{{ .Values.model.port }}"
-            - name: MODEL_DIR
-              value: "/app/output" 
             - name: MODEL_PATH
-              value: "/app/output/model.joblib"
-            # - name: MODEL_URL
-            #   value: "{{ .Values.model.MODEL_URL }}"
+              value: "/models/model.joblib"
+            - name: MODEL_URL
+              value: "{{ .Values.model.MODEL_URL }}"
           volumeMounts:
             - name: shared-volume
               mountPath: {{ .Values.sharedVolume.mountPath | quote }}

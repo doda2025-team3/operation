@@ -20,19 +20,27 @@ spec:
             subset: v1
             port:
               number: {{ .Values.app.port }}
+          headers:
+            response:
+              add:
+                app-subset: "v1"
 
     - match:
-        - headers:
-            cookie:
-              regex: "^(.*;)?(experiment=v2)(;.*)?$"
-          uri: 
-            prefix: /
+      - headers:
+          cookie:
+            regex: "^(.*;)?(experiment=v2)(;.*)?$"
+        uri: 
+          prefix: /
       route:
         - destination:
             host: app
             subset: v2
             port:
               number: {{ .Values.app.port }}
+          headers:
+            response:
+              add:
+                app-subset: "v2"
               
     - match:
         - uri:
@@ -43,18 +51,20 @@ spec:
             subset: v1
             port:
               number: {{ .Values.app.port }}
-          weight: 70
+          weight: 90
           headers:
             response:
               add:
                 set-cookie: "experiment=v1; Path=/; Max-Age=86400"
+                app-subset: "v1"
         - destination:
             host: app
             subset: v2
             port:
               number: {{ .Values.app.port }}
-          weight: 30
+          weight: 10
           headers:
             response:
               add:
                 set-cookie: "experiment=v2; Path=/; Max-Age=86400"
+                app-subset: "v2"

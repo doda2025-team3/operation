@@ -20,6 +20,10 @@ spec:
         version: v2
         sms-checker: "true"
         component: backend
+        istio.io/rev: default
+
+      annotations:
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: model-service

@@ -20,13 +20,16 @@ spec:
         version: v1
         sms-checker: "true"
         component: frontend
+        istio.io/rev: default
+
+      annotations:
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: app
           image: {{ .Values.app.v1Image }}
           ports:
-            - name: http
-              containerPort: {{ .Values.app.port }}
+            - containerPort: {{ .Values.app.port }}
           env:
             - name: SERVER_PORT
               value: "{{ .Values.app.port }}"

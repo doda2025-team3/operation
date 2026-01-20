@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 30,
+  "id": 5,
   "links": [],
   "panels": [
     {
@@ -37,8 +37,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -176,8 +175,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -286,7 +284,7 @@
           "expr": "sms_predictions_spam_ratio",
           "format": "time_series",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": " Spam ratio of {{pod}}",
           "range": false,
           "refId": "A"
         }
@@ -343,8 +341,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -436,8 +433,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -499,6 +495,6 @@
   "timezone": "browser",
   "title": "SMS Frontend Overview",
   "uid": "af9khdnllxhj4a",
-  "version": 7,
+  "version": 1,
   "weekStart": ""
 }

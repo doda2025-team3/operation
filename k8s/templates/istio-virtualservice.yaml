@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-entry
+spec:
+  gateways:
+    - {{ .Release.Name }}-gateway
+  hosts:
+    - "*"
+  http:
+    - match:
+        - headers:
+            cookie:
+              regex: "^(.*;)?(experiment=v1)(;.*)?$"
+          uri:
+            prefix: /
+      route:
+        - destination:
+            host: app
+            subset: v1
+            port:
+              number: 80
+          headers:
+            response:
+              add:
+                app-subset: "v1"
+
+    - match:
+      - headers:
+          cookie:
+            regex: "^(.*;)?(experiment=v2)(;.*)?$"
+        uri: 
+          prefix: /
+      route:
+        - destination:
+            host: app
+            subset: v2
+            port:
+              number: 80
+          headers:
+            response:
+              add:
+                app-subset: "v2"
+              
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: app
+            subset: v1
+            port:
+              number: 80
+          weight: 90
+          headers:
+            response:
+              add:
+                set-cookie: "experiment=v1; Path=/; Max-Age=86400"
+                app-subset: "v1"
+        - destination:
+            host: app
+            subset: v2
+            port:
+              number: 80
+          weight: 10
+          headers:
+            response:
+              add:
+                set-cookie: "experiment=v2; Path=/; Max-Age=86400"
+                app-subset: "v2"

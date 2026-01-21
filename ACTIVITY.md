@@ -80,15 +80,53 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 ### Week Q2.5 (Dec 8+)
 
+- Carolyn: https://github.com/doda2025-team3/operation/pull/16
+  Worked on AlertManager aspect leftover from Assignment 3
+- Gabriel: https://github.com/doda2025-team3/operation/pull/14
+  Went over and analysed multiple pull requests in operation and model-service. (https://github.com/doda2025-team3/model-service/pull/7, https://github.com/doda2025-team3/model-service/pull/5 and https://github.com/doda2025-team3/operation/pull/11)
+  I edited the model-service to create a model when there isn't any in the volume.
+  I added helm plugin in ctrl.
+  I edited the node vagrant to be more robust.
+  Studied about istio implementation.
+- Alex
+- Started working on a use case
+  
+
 
 ### Week Q2.6 (Dec 15+)
+- Gabriel:
+  Debugged the join command because it got stuck on joining.
+  Continued with the continous experimentation.
+  Continued with additional Use Case
+  Went over the criteria for each assignment and noted how to improve each.
 
+- Carolyn: https://github.com/doda2025-team3/app/pull/6
+  Worked on bringing assignment 1 to try for the excellent category
+  
 
 ### Week Q2.7 (Jan 5+)
+- Gabriel: https://github.com/doda2025-team3/operation/pull/20, https://github.com/doda2025-team3/operation/pull/21
+  Went over multiple pull requests (https://github.com/doda2025-team3/operation/pull/18, https://github.com/doda2025-team3/operation/pull/19)
+  Further debugged the join command.
+  Added a fix for the join command.
+  Continued with additional Use Case
+  Added aditional use case for limiting number of requests.
 
+- Carolyn: https://github.com/doda2025-team3/operation/pull/17
+  Worked on bringing assignment 2 to try for the excellent category
 
-### Week Q2.8 (Jan 15+)
-
+### Week Q2.8 (Jan 12+)
+- Gabriel: https://github.com/doda2025-team3/operation/pull/22
+  Went over multiple pull requests (https://github.com/doda2025-team3/operation/pull/18, https://github.com/doda2025-team3/operation/pull/19)
+  Continued with the continous experimentation.
+  Added showing two frontend versions.
+  Added a branch for green button within the frontend, and made an image for the branch.
+  
+- Carolyn: https://github.com/doda2025-team3/operation/pull/23
+  Worked on integrating traffic management to the main branch, as well as implemented sticky sessions. Fixed some aspects of traffic management as well.
+  Updated the README file.
 
 ### Week Q2.9 (Jan 19+)
+- Gabriel:
+  Continued with the continous experimentation.
 

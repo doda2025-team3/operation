@@ -3,12 +3,13 @@ kind: Service
 metadata:
   name: app
   labels:
-    app: sms-checker
+    app: app
     component: frontend
 spec:
   type: ClusterIP
   selector:
     app: app
   ports:
-    - port: {{ .Values.app.port }}
+    - name: http
+      port: {{ .Values.app.port }}
       targetPort: {{ .Values.app.port }}

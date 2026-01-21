@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "sms-checker.fullname" . }}-frontend
+  name: app-frontend
   labels:
     release: {{ .Release.Name }}
 spec:
@@ -10,7 +10,7 @@ spec:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: sms-checker
+      app: app
       component: frontend
   endpoints:
     - port: http

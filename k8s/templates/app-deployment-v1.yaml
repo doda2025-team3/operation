@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-v1
+  labels:
+    app: app
+    version: v1
+    sms-checker: "true"
+    component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: app
+        version: v1
+        sms-checker: "true"
+        component: frontend
+        istio.io/rev: default
+
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.app.v1Image }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          env:
+            - name: SERVER_PORT
+              value: "{{ .Values.app.port }}"
+            - name: MODEL_HOST
+              value: "http://{{ .Values.model.serviceName }}:{{ .Values.model.port }}"
+            - name: APP_VERSION
+              value: "v1"
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: {{ .Values.secret.name }}

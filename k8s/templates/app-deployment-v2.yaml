@@ -1,20 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: app-v2
+  labels:
+    app: app
+    version: v2
+    sms-checker: "true"
+    component: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: app
+      version: v2
   template:
     metadata:
       labels:
         app: app
+        version: v2
+        sms-checker: "true"
+        component: frontend
+        istio.io/rev: default
+      annotations:
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: app
-          image: {{ .Values.app.image }}
+          image: {{ .Values.app.v2Image }}
           ports:
             - containerPort: {{ .Values.app.port }}
           env:
@@ -22,8 +34,10 @@ spec:
               value: "{{ .Values.app.port }}"
             - name: MODEL_HOST
               value: "http://{{ .Values.model.serviceName }}:{{ .Values.model.port }}"
+            - name: APP_VERSION
+              value: "v2"
           envFrom:
             - configMapRef:
                 name: app-config
             - secretRef:
-                name: app-secret
+                name: {{ .Values.secret.name }}

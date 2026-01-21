@@ -19,7 +19,7 @@ spec:
             host: app
             subset: v1
             port:
-              number: 80
+              number: {{ .Values.app.port }}
           headers:
             response:
               add:
@@ -36,7 +36,7 @@ spec:
             host: app
             subset: v2
             port:
-              number: 80
+              number: {{ .Values.app.port }}
           headers:
             response:
               add:
@@ -50,8 +50,8 @@ spec:
             host: app
             subset: v1
             port:
-              number: 80
-          weight: 90
+              number: {{ .Values.app.port }}
+          weight: 50
           headers:
             response:
               add:
@@ -61,8 +61,8 @@ spec:
             host: app
             subset: v2
             port:
-              number: 80
-          weight: 10
+              number: {{ .Values.app.port }}
+          weight: 50
           headers:
             response:
               add:

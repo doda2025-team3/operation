@@ -1,5 +1,7 @@
 app:
   image: "ghcr.io/doda2025-team3/app:latest"
+  v1Image: "ghcr.io/doda2025-team3/app:0.0.2.3"
+  v2Image: "ghcr.io/doda2025-team3/app:0.0.2.2"
   port: 8080
 
 model:
@@ -15,7 +17,8 @@ ingress:
   stableHost: "operation.local"
   canaryHost: "operation-canary.local"
   path: /
-
+istio:
+  ingressGatewayLabel: ingressgateway
 kube-prometheus-stack:
   prometheus:
     prometheusSpec:

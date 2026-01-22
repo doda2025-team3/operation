@@ -14,11 +14,12 @@ services:
 
   model-service:
     image: ${MODEL_IMAGE}:${MODEL_VERSION:-latest}
+    # Testing purposes!!S
+    # build: 
+    #   context: ../model-service
     # image: model-service:local
     container_name: model-service
     restart: unless-stopped
-    ports:
-      - "${MODEL_PORT:-8081}:8081"
     environment:
       MODEL_PORT: "${MODEL_PORT:-8081}"
       MODEL_PATH: "/models/model.joblib"

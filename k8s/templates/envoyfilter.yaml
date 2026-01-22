@@ -1,0 +1,90 @@
+{{- if .Values.rateLimit.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ .Release.Name }}-user-tracking-ratelimit
+  namespace: {{ .Values.rateLimit.istioNamespace }}
+spec:
+  workloadSelector:
+    labels:
+      istio: {{ .Values.rateLimit.ingressGatewayLabel }}
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+            inlineCode: |
+              local user_counts = {}
+              local last_cleanup = os.time()
+              
+              local RATE_LIMIT_RPM = {{ .Values.rateLimit.requestsPerMinute | default 5 }}
+              
+              function envoy_on_request(request_handle)
+                local headers = request_handle:headers()
+                local path = headers:get(":path")
+                local method = headers:get(":method")
+                
+                if method == "POST" and string.find(path, "/sms/track%-click") then
+                  return
+                end
+
+                local cookie = headers:get("cookie")
+                local user_id = nil
+                
+                if cookie then
+                  local s, e = string.find(cookie, "user_id=[^;]+")
+                  if s then
+                    user_id = string.sub(cookie, s+8, e)
+                  end
+                end
+
+                if not user_id then
+                  user_id = "u-" .. os.time() .. "-" .. math.random(10000, 99999)
+                  request_handle:streamInfo():dynamicMetadata():set("envoy.filters.http.lua", "set_cookie", "true")
+                end
+                
+                request_handle:streamInfo():dynamicMetadata():set("envoy.filters.http.lua", "user_id", user_id)
+
+                local now = os.time()
+
+                if os.difftime(now, last_cleanup) >= 60 then
+                   user_counts = {}
+                   last_cleanup = now
+                end
+
+                local current_count = user_counts[user_id] or 0
+                
+                if current_count >= RATE_LIMIT_RPM then
+                   request_handle:logInfo("Rate Limit Hit for user: " .. user_id)
+                   request_handle:respond(
+                     {[":status"] = "429", ["content-type"] = "text/plain", ["x-local-rate-limit"] = "true"},
+                     "Too Many Requests\n"
+                   )
+                   return
+                end
+
+                user_counts[user_id] = current_count + 1
+              end
+
+              function envoy_on_response(response_handle)
+                local meta = response_handle:streamInfo():dynamicMetadata():get("envoy.filters.http.lua")
+                if meta then
+                   local uid = meta["user_id"]
+                   if meta["set_cookie"] == "true" then
+                      response_handle:headers():add("Set-Cookie", "user_id=" .. uid .. "; Path=/; Max-Age=86400")
+                   end
+                   response_handle:headers():add("x-debug-user-id", uid)
+                end
+              end
+{{- end }}

@@ -103,6 +103,36 @@
         dest: /tmp/metallb-l2.yml
         mode: "0644"
 
+    # Wait 1: controller deployment is available (stronger than pod ready)
+    - name: Wait for MetalLB controller deployment to be Available
+      ansible.builtin.command: >
+        kubectl -n metallb-system wait
+        --for=condition=Available deploy/controller
+        --timeout=180s
+      changed_when: false
+
+    # Wait 2: webhook service has endpoints (prevents "connection refused")
+    - name: Wait for MetalLB webhook service to have endpoints
+      ansible.builtin.command: >
+        kubectl -n metallb-system get endpoints metallb-webhook-service
+        -o jsonpath={.subsets[*].addresses[*].ip}
+      register: metallb_webhook_eps
+      retries: 30
+      delay: 2
+      until: metallb_webhook_eps.stdout | length > 0
+      changed_when: false
+
+    # (Optional but helpful) Wait 3: endpoints include port 9443
+    - name: Wait for MetalLB webhook endpoint port 9443 to be published
+      ansible.builtin.command: >
+        kubectl -n metallb-system get endpoints metallb-webhook-service
+        -o jsonpath={.subsets[*].ports[*].port}
+      register: metallb_webhook_ports
+      retries: 30
+      delay: 2
+      until: "'9443' in metallb_webhook_ports.stdout"
+      changed_when: false
+
     # Step 20.3 - IPAddressPool
     - name: Apply IPAddressPool
       command: kubectl apply -f /tmp/metallb-ip-pool.yml

@@ -1,22 +1,41 @@
 - name: Set authorized key taken from file
   hosts: all
   become: true
+  vars:
+    ssh_key_dir: "public_keys"
+    ssh_keys: "{{ lookup('fileglob', ssh_key_dir ~ '/*.pub', wantlist=True) }}"
+
+
 
   tasks:
-    - name: Add ssh key daniel
+    # Step 4
+    - name: Add ssh keys of team
       ansible.posix.authorized_key:
         user: vagrant
         state: present
-        key: "{{ lookup('file', './public_keys/key_daniel.pub') }}"
+        key: "{{ lookup('file', item) }}"
+      loop: "{{ ssh_keys }}"
+      when: ssh_keys | length > 0
 
+    - name: Enable ssh
+      service:
+        name: ssh
+        state: started
+        enabled: true
+
+    # Step 5
     - name: Disable swap
       command: swapoff -a
+      when: ansible_swaptotal_mb | int > 0
+      changed_when: ansible_swaptotal_mb | int > 0
 
     - name: Prevent re-mount on next boot
       lineinfile:
         path: /etc/fstab
         regexp: '^\s*\S+\s+\S+\s+swap\s+'
         state: absent
+      
+    # Step 6
     - name: Permanently enable modules
       copy:
         dest: /etc/modules-load.d/k8s.conf
@@ -25,8 +44,14 @@
           br_netfilter
 
     - name: Load modules
-      command: modprobe br_netfilter
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
 
+    # Step 7
     - name: Set sysctl parameters for networking
       copy:
         dest: /etc/sysctl.d/k8s.conf
@@ -58,6 +83,7 @@
         reload: yes
 
 
+    # Step 8
     - name: Manage /etc/hosts
       copy:
         dest: /etc/hosts
@@ -69,9 +95,10 @@
 
           192.168.56.100 ctrl
           {% for i in range(1, NUM_WORKER_NODES + 1) %}
-          192.168.56.10{{ i }} node-{{ i }}
+          192.168.56.{{ 100 + i }} node-{{ i }}
           {% endfor %}
 
+    # Step 9
     - name: Ensure appropriate dependencies are installed
       apt:
         name:
@@ -90,11 +117,14 @@
       apt_repository:
         filename: kubernetes
         repo: "deb https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /"
+        state: present
 
     - name: Update apt cache
       apt:
         update_cache: yes
 
+
+    # Step 10
     - name: Install K8s tools
       apt:
         name: 
@@ -107,7 +137,7 @@
         update_cache: yes
         allow_downgrade: yes
 
-    #11
+    # Step 11
     - name: Make directory existent
       ansible.builtin.file:
         path: /etc/containerd
@@ -129,25 +159,29 @@
         path: /etc/containerd/config.toml
         regexp: '^(\s*)sandbox_image ='
         line: '    sandbox_image = "registry.k8s.io/pause:3.10"'
+      notify: Restart containerd
 
     - name: Set SystemdCgroup to true
       ansible.builtin.lineinfile:
         path: /etc/containerd/config.toml
         regexp: '^(\s*)SystemdCgroup ='
         line: '            SystemdCgroup = true'
+    
+    # Step 12
+    - name: Start the kubelet service
+      ansible.builtin.service:
+        name: kubelet
+        state: started
+        enabled: true
+
+  
+  handlers:
 
     - name: Restart containerd
       ansible.builtin.service: 
         name: containerd
         state: restarted
         enabled: true
-    #12
-    - name: Start the kubelet service
-      ansible.builtin.service:
-        name: kubelet
-        state: started
-        enabled: true
-  handlers:
     
     - name: Apply sysctl parameters
       command: sysctl --system

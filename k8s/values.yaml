@@ -69,3 +69,10 @@ sharedVolume:
 
 istio:
   ingressGatewayLabel: ingressgateway
+  namespace: istio-system
+
+rateLimit:
+  enabled: true
+  requestsPerMinute: 5
+  istioNamespace: istio-system 
+  ingressGatewayLabel: ingressgateway

@@ -78,10 +78,26 @@
       changed_when: false
 
     # Step 20.1 - Install MetalLB CRDs
+
+    - name: Check if MetalLB is already installed
+      kubernetes.core.k8s_info:
+        kind: Deployment
+        namespace: metallb-system
+        name: controller
+      register: metallb_status
+
+    - name: Download MetalLB Manifest
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+        dest: /tmp/metallb-native.yaml
+        mode: '0664'
+      when: metallb_status.resources | length == 0
+        
     - name: Install MetalLB CRDs
-      command: >
-        kubectl apply -f
-        https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+      kubernetes.core.k8s:
+        src: /tmp/metallb-native.yaml
+        state: present
+      when: metallb_status.resources | length == 0
 
     # Step 20.2 - Wait for MetalLB to be ready
     - name: Wait for MetalLB to be ready
@@ -90,6 +106,7 @@
         -l app=metallb,component=controller
         --for=condition=ready pod
         --timeout=180s
+      changed_when: false
 
     - name: Copy MetalLb IPAddressPool
       ansible.builtin.copy:
@@ -135,11 +152,15 @@
 
     # Step 20.3 - IPAddressPool
     - name: Apply IPAddressPool
-      command: kubectl apply -f /tmp/metallb-ip-pool.yml
+      kubernetes.core.k8s:
+        src: /tmp/metallb-ip-pool.yml
+        state: present
 
     # Step 20.4 - L2Advertisement
     - name: Apply L2Advertisement
-      command: kubectl apply -f /tmp/metallb-l2.yml
+      kubernetes.core.k8s:
+        src: /tmp/metallb-l2.yml
+        state: present
 
     # Step 21.1 - Add Helm repo
     - name: Add Helm repo for ingress-nginx
@@ -152,6 +173,7 @@
     - name: Update Helm repos
       command: helm repo update
       run_once: true
+      changed_when: false
 
     - name: Copy Ingress Values
       ansible.builtin.copy:
@@ -172,13 +194,10 @@
       run_once: true
 
     # Step 22
-    - name: Add Kubernetes dashboard
-      ansible.builtin.command: helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-      register: kube_dashboard
-      failed_when: kube_dashboard.rc != 0 and ("already exists" not in (kube_dashboard.stderr | default('')))
-
-    - name: Update Helm Repositories
-      ansible.builtin.command: helm repo update
+    - name: Add Kubernetes dashboard repo
+      kubernetes.core.helm_repository:
+        name: kubernetes-dashboard
+        repo_url: https://kubernetes.github.io/dashboard/
 
     - name: Install Kubernetes dashboard
       kubernetes.core.helm:
@@ -267,6 +286,7 @@
         extra_opts:
           - --strip-components=2
           - istio-1.25.2/bin/istioctl
+        creates: /usr/local/bin/istioctl
       when: ansible_facts['architecture'] in ["x86_64", "amd64"]
 
     - name: Extract Istio (arm)
@@ -277,6 +297,7 @@
         extra_opts:
           - --strip-components=2
           - istio-1.25.2/bin/istioctl
+        creates: /usr/local/bin/istioctl
       when: ansible_facts['architecture'] in ["aarch64", "arm64"]
 
     - name: Ensure istioctl is executable
@@ -293,15 +314,25 @@
         group: vagrant
         mode: "0644"
 
+    - name: Check if Istio is already installed
+      ansible.builtin.command: kubectl get deployment istiod -n istio-system
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      register: istiod_check
+      failed_when: false
+      changed_when: false
+
     - name: Install Istio control
       ansible.builtin.command: istioctl install -y -f /home/vagrant/istio/istio-operator.yml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
+      when: istiod_check.rc != 0
 
     - name: Wait for Istio to be ready  
       ansible.builtin.command: kubectl -n istio-system wait --for=condition=available deployment/istiod --timeout=180s
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
+      changed_when: false
 
     - name: Wait for external IP of istio-ingressgateways
       ansible.builtin.shell: |

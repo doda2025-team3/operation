@@ -5,8 +5,14 @@ metadata:
   namespace: kubernetes-dashboard
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - dashboard.local
+      secretName: dashboard-local-tls
+  
   rules:
     - host: dashboard.local
       http:

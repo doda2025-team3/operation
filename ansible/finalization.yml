@@ -326,7 +326,6 @@
       ansible.builtin.command: istioctl install -y -f /home/vagrant/istio/istio-operator.yml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
-      when: istiod_check.rc != 0
 
     - name: Wait for Istio to be ready  
       ansible.builtin.command: kubectl -n istio-system wait --for=condition=available deployment/istiod --timeout=180s

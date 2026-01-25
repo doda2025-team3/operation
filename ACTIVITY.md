@@ -127,6 +127,6 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   Updated the README file.
 
 ### Week Q2.9 (Jan 19+)
-- Gabriel:
-  Continued with the continous experimentation.
+- Gabriel: https://github.com/doda2025-team3/operation/pull/25
+  Implemented continous experimentation section.
 

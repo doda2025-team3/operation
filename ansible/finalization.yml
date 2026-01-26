@@ -193,6 +193,62 @@
         state: present
       run_once: true
 
+    - name: Create local TLS cert directory
+      ansible.builtin.file:
+        path: /etc/k8s-local-tls
+        state: directory
+        mode: "0700"
+
+    - name: Generate self-signed cert for dashboard.local
+      ansible.builtin.command: >
+        openssl req -x509 -nodes -days 3650
+        -newkey rsa:2048
+        -keyout /etc/k8s-local-tls/dashboard.local.key
+        -out /etc/k8s-local-tls/dashboard.local.crt
+        -subj "/CN=dashboard.local"
+      args:
+        creates: /etc/k8s-local-tls/dashboard.local.crt
+
+    - name: Read dashboard.local cert
+      ansible.builtin.slurp:
+        src: /etc/k8s-local-tls/dashboard.local.crt
+      register: dash_crt
+
+    - name: Read dashboard.local key
+      ansible.builtin.slurp:
+        src: /etc/k8s-local-tls/dashboard.local.key
+      register: dash_key
+
+    - name: Create default TLS secret for ingress-nginx
+      kubernetes.core.k8s:
+        kubeconfig: /etc/kubernetes/admin.conf
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: default-local-tls
+            namespace: ingress-nginx
+          type: kubernetes.io/tls
+          data:
+            tls.crt: "{{ dash_crt.content }}"
+            tls.key: "{{ dash_key.content }}"
+
+    - name: Create TLS secret for kubernetes-dashboard namespace
+      kubernetes.core.k8s:
+        kubeconfig: /etc/kubernetes/admin.conf
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: dashboard-local-tls
+            namespace: kubernetes-dashboard
+          type: kubernetes.io/tls
+          data:
+            tls.crt: "{{ dash_crt.content }}"
+            tls.key: "{{ dash_key.content }}"
+
     # Step 22
     - name: Add Kubernetes dashboard repo
       kubernetes.core.helm_repository:
@@ -326,7 +382,6 @@
       ansible.builtin.command: istioctl install -y -f /home/vagrant/istio/istio-operator.yml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
-      when: istiod_check.rc != 0
 
     - name: Wait for Istio to be ready  
       ansible.builtin.command: kubectl -n istio-system wait --for=condition=available deployment/istiod --timeout=180s

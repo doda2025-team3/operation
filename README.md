@@ -87,7 +87,7 @@ Then, to create the token, run:
 kubectl -n kubernetes-dashboard create token admin-user
 ```
 
-Copy-paste the output to gain access to the dashboard. 
+Visit the site (http://dashboard.local) and copy-paste the output to gain access to the dashboard. 
 
 
 ## Cleaning up
@@ -121,7 +121,7 @@ Finally, run the following commands to install the helm chart:
 
 ```bash
 helm dependency update
-helm upgrade --install myapp ./k8s
+helm upgrade --install myapp .
 ```
 
 The app frontend can then be accessed by following the steps below:
@@ -135,6 +135,7 @@ echo "192.168.56.91 operation.local operation-canary.local" | sudo tee -a /etc/h
 This tool scrapes for application-specific metrics on the /metrics endpoint of the app. To view the dashboard, port-forward using the command below, and then visit the site (http://localhost:9090).
 
 ```bash
+kubectl port-forward pod/prometheus-myapp-kube-prometheus-stac-prometheus-0 9090:9090
 ```
 
 ## Alerting
@@ -142,6 +143,7 @@ A PrometheusRule was used to define the alert. Here, we are looking at a high re
 
 To view the dashboard, port-forward like so:
 ```bash
+kubectl port-forward pod/alertmanager-myapp-kube-prometheus-stac-alertmanager-0 9093:9093
 ```
 
 Then visit this site,(http://localhost:9093).
@@ -172,6 +174,7 @@ An email should then be sent to your email after triggering the alert like shown
 Grafana is used to visualize the metrics of the application. Similarly to the previous two tools, to view the dashboard, please port-forward using the command below and then visit the site (http://localhost:3000).
 
 ```bash
+kubectl port-forward svc/myapp-grafana 3000:80
 ```
 
 # Assignment 4: Istio Service Mesh
@@ -183,6 +186,12 @@ For this, traffic management was made possible via the use of Gateways, Destinat
 
 The split can be tested by running the following command:
 ```bash
+for i in $(seq 1 200); do
+  curl -sk -D - http://operation.local/sms/ \
+  -o /dev/null \
+  | awk 'BEGIN{IGNORECASE=1} /^app-subset:/{print $2}' \
+  | tr -d '\r'
+done | sort | uniq -c
 ```
 
 The split can be seen to roughly follow 90%/10%.
@@ -191,8 +200,18 @@ The split can be seen to roughly follow 90%/10%.
 
 Sticky sessions was implemented in the VirtualService resource by cookie-based assignment. One first request, the request matches the catch-all rule and is directed via the 90/10 split. Following that, it sets the appropriate cookie value. On subsequent requests, it gets taken to corresponding version based on the value of the cookie. 
 
-This can be tested by running the following command:
+This can be tested by running the following commands:
+
+Set the initial cookie:
 ```bash
+rm -f /tmp/cookies.txt
+curl -sk -c /tmp/cookies.txt -D - http://operation.local/sms/ -o /dev/null | egrep -i 'set-cookie|app-subset'
+```
+Test out 40 requests:
+```bash
+for i in {1..40}; do
+  curl -sk -b /tmp/cookies.txt -I http://operation.local/sms/ | grep -i app-subset
+done | sort | uniq -c
 ```
 
 The result should show that the same version was seen every time. 

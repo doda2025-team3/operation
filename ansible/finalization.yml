@@ -182,16 +182,70 @@
         mode: "0644"
 
     # Step 21.3 - Install Nginx
-    - name: Install NGINX Ingress Controller
-      kubernetes.core.helm:
-        name: ingress-nginx
-        chart_ref: ingress-nginx/ingress-nginx
-        release_namespace: ingress-nginx
-        create_namespace: true
-        values_files: 
-          - /tmp/ingress-values.yml
-        state: present
-      run_once: true
+    - block:
+        - name: Install NGINX Ingress Controller
+          kubernetes.core.helm:
+            name: ingress-nginx
+            chart_ref: ingress-nginx/ingress-nginx
+            release_namespace: ingress-nginx
+            create_namespace: true
+            values_files: 
+              - /tmp/ingress-values.yml
+            state: present
+            wait: true
+            wait_timeout: 10m
+            atomic: true
+          run_once: true
+
+        - name: Wait for ingree-nginx controller deployment
+          ansible.builtin.command: >
+            kubectl -n ingress-nginx wait
+            --for=condition=Available deploy/ingress-nginx-controller
+            --timeout=300s
+          changed_when: false
+
+        - name: wait for ingress-nginx controller to exists
+          ansible.builtin.command: >
+            kubectl -n ingress-nginx get svc ingress-nginx-controller
+          register: nginx_svc_exists
+          retries: 30
+          delay: 2
+          until: nginx_svc_exists.rc == 0
+          changed_when: false
+
+        - name: wait for ingress-nginx external addresses
+          ansible.builtin.shell: >
+            kubectl -n ingress-nginx get svc ingress-nginx-controller
+            -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}'
+          register: nginx_lb_addr
+          retries: 60
+          delay: 5
+          until: nginx_lb_addr.stdout | length > 0
+          changed_when: false
+
+        - name: show ingress-nginx external addresses
+          ansible.builtin.debug:
+            msg: "ingress-nginx external address = {{ nginx_lb_addr.stdout }}"
+      rescue:
+        - name: Helm status ingress-nginx (debug)
+          ansible.builtin.command: helm -n ingress-nginx status ingress-nginx
+          changed_when: false
+          failed_when: false
+
+        - name: Events in ingress-nginx namespace (debug)
+          ansible.builtin.command: kubectl -n ingress-nginx get events --sort-by=.lastTimestamp
+          changed_when: false
+          failed_when: false
+
+        - name: Cluster events mentioning ingress-nginx (debug)
+          ansible.builtin.shell: kubectl get events -A --sort-by=.lastTimestamp | grep -i ingress-nginx | tail -100 || true
+          changed_when: false
+          failed_when: false
+
+        - name: Fail explicitly
+          ansible.builtin.fail:
+            msg: "ingress-nginx install failed."
+    
 
     - name: Create local TLS cert directory
       ansible.builtin.file:
@@ -233,6 +287,13 @@
           data:
             tls.crt: "{{ dash_crt.content }}"
             tls.key: "{{ dash_key.content }}"
+    
+    - name: Ensure kubernetes-dashboard namespace exists
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: kubernetes-dashboard
+        state: present
 
     - name: Create TLS secret for kubernetes-dashboard namespace
       kubernetes.core.k8s:
@@ -263,10 +324,22 @@
         create_namespace: true
         update_repo_cache: true
         wait: true
-        wait_timeout: 300s
+        wait_timeout: 10m
+        atomic: true
         state: present
         kubeconfig: /etc/kubernetes/admin.conf
       run_once: true
+
+    - name: Wait for dashboard deployments
+      ansible.builtin.command: >
+        kubectl -n kubernetes-dashboard wait
+        --for=condition=Available deploy --all
+        --timeout=600s
+      changed_when: false
+
+    - name: Show dashboard pods
+      ansible.builtin.command: kubectl -n kubernetes-dashboard get pods -o wide
+      changed_when: false
 
     - name: Copy Dashboard admin-user
       ansible.builtin.copy:
@@ -384,20 +457,24 @@
         KUBECONFIG: /etc/kubernetes/admin.conf
 
     - name: Wait for Istio to be ready  
-      ansible.builtin.command: kubectl -n istio-system wait --for=condition=available deployment/istiod --timeout=180s
+      ansible.builtin.command: kubectl -n istio-system wait --for=condition=Available deployment/istiod --timeout=300s
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      changed_when: false
+
+    - name: Wait for istio-ingressgateways to be Available
+      ansible.builtin.command: kubectl -n istio-system wait --for=condition=Available deployment/istio-ingressgateway --timeout=300s
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
       changed_when: false
 
     - name: Wait for external IP of istio-ingressgateways
-      ansible.builtin.shell: |
-        kubectl -n istio-system get svc istio-ingressgateway \
-        -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+      ansible.builtin.command: kubectl -n istio-system get svc istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}'
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
       register: istio_ip
-      retries: 20
-      delay: 10
-      until: istio_ip.stdout != ""
+      retries: 60
+      delay: 5
+      until: istio_ip.stdout | length > 0
       changed_when: false
     

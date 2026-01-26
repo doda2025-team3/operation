@@ -59,7 +59,13 @@ Should a version be preferred, the user can specify by altering the cookie value
 
 ## Additional use case (rate-limiting)
 
-Gabriel TODO
+For ratelimiting, an envoyfilter was used. Within the envoyfilter there is lua code that injects a user id to the user and uses that id to keep count of requests. It does so by first checking if the user has an id, and creating one otherwise. After setting the id, it checks if the time has passed 60 seconds, if so, it resets the counter for the amount of requests per users. Then it continues by checking the count for the specific user. If it is above the threshold, it ratelimits the user with 429 error code. If the count is within the threshold, it increments it by one. To ensure the metrics aren't limited, post requests to `/sms/track-click` are not included. For this use case the relevant documents are, `envoyfilter.yaml` and `values.yaml`, where, `values.yaml` is used to set the threshold.
+
+The rate limiter can be tested with:
+```bash
+for i in {1..20}; do curl -s -o /dev/null -w "Request $i: %{http_code}\n" http://operation.local/sms/; done
+```
+The result should show some 200 codes and then 429 codes.
 
 ### Monitoring and observability
 

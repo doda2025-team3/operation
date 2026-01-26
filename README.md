@@ -186,6 +186,12 @@ For this, traffic management was made possible via the use of Gateways, Destinat
 
 The split can be tested by running the following command:
 ```bash
+for i in $(seq 1 200); do
+  curl -sk -D - http://operation.local/sms/ \
+  -o /dev/null \
+  | awk 'BEGIN{IGNORECASE=1} /^app-subset:/{print $2}' \
+  | tr -d '\r'
+done | sort | uniq -c
 ```
 
 The split can be seen to roughly follow 90%/10%.
@@ -194,8 +200,18 @@ The split can be seen to roughly follow 90%/10%.
 
 Sticky sessions was implemented in the VirtualService resource by cookie-based assignment. One first request, the request matches the catch-all rule and is directed via the 90/10 split. Following that, it sets the appropriate cookie value. On subsequent requests, it gets taken to corresponding version based on the value of the cookie. 
 
-This can be tested by running the following command:
+This can be tested by running the following commands:
+
+Set the initial cookie:
 ```bash
+rm -f /tmp/cookies.txt
+curl -sk -c /tmp/cookies.txt -D - http://operation.local/sms/ -o /dev/null | egrep -i 'set-cookie|app-subset'
+```
+Test out 40 requests:
+```bash
+for i in {1..40}; do
+  curl -sk -b /tmp/cookies.txt -I http://operation.local/sms/ | grep -i app-subset
+done | sort | uniq -c
 ```
 
 The result should show that the same version was seen every time. 

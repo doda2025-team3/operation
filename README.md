@@ -87,7 +87,7 @@ Then, to create the token, run:
 kubectl -n kubernetes-dashboard create token admin-user
 ```
 
-Copy-paste the output to gain access to the dashboard. 
+Visit the site (http://dashboard.local) and copy-paste the output to gain access to the dashboard. 
 
 
 ## Cleaning up
@@ -121,7 +121,7 @@ Finally, run the following commands to install the helm chart:
 
 ```bash
 helm dependency update
-helm upgrade --install myapp ./k8s
+helm upgrade --install myapp .
 ```
 
 The app frontend can then be accessed by following the steps below:
@@ -135,6 +135,7 @@ echo "192.168.56.91 operation.local operation-canary.local" | sudo tee -a /etc/h
 This tool scrapes for application-specific metrics on the /metrics endpoint of the app. To view the dashboard, port-forward using the command below, and then visit the site (http://localhost:9090).
 
 ```bash
+kubectl port-forward pod/prometheus-myapp-kube-prometheus-stac-prometheus-0 9090:9090
 ```
 
 ## Alerting
@@ -142,6 +143,7 @@ A PrometheusRule was used to define the alert. Here, we are looking at a high re
 
 To view the dashboard, port-forward like so:
 ```bash
+kubectl port-forward pod/alertmanager-myapp-kube-prometheus-stac-alertmanager-0 9093:9093
 ```
 
 Then visit this site,(http://localhost:9093).
@@ -172,6 +174,7 @@ An email should then be sent to your email after triggering the alert like shown
 Grafana is used to visualize the metrics of the application. Similarly to the previous two tools, to view the dashboard, please port-forward using the command below and then visit the site (http://localhost:3000).
 
 ```bash
+kubectl port-forward svc/myapp-grafana 3000:80
 ```
 
 # Assignment 4: Istio Service Mesh

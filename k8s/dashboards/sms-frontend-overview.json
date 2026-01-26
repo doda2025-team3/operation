@@ -78,7 +78,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(rate(sms_prediction_latency_seconds_sum[$__rate_interval])\n/\nrate(sms_prediction_latency_seconds_count[$__rate_interval]))",
+          "expr": "sum(rate(sms_prediction_latency_seconds_sum[$__rate_interval]))/sum(rate(sms_prediction_latency_seconds_count[$__rate_interval]))",
           "legendFormat": "Average Latency",
           "range": true,
           "refId": "A"

@@ -105,28 +105,28 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
   
 
 ### Week Q2.7 (Jan 5+)
-- Gabriel: https://github.com/doda2025-team3/operation/pull/20, https://github.com/doda2025-team3/operation/pull/21
+- Gabriel: https://github.com/doda2025-team3/operation/pull/20
   Went over multiple pull requests (https://github.com/doda2025-team3/operation/pull/18, https://github.com/doda2025-team3/operation/pull/19)
   Further debugged the join command.
   Added a fix for the join command.
   Continued with additional Use Case
-  Added aditional use case for limiting number of requests.
 
 - Carolyn: https://github.com/doda2025-team3/operation/pull/17
   Worked on bringing assignment 2 to try for the excellent category
 
 ### Week Q2.8 (Jan 12+)
-- Gabriel: https://github.com/doda2025-team3/operation/pull/22
+- Gabriel: https://github.com/doda2025-team3/operation/pull/21, https://github.com/doda2025-team3/operation/pull/22
   Went over multiple pull requests (https://github.com/doda2025-team3/operation/pull/18, https://github.com/doda2025-team3/operation/pull/19)
   Continued with the continous experimentation.
   Added showing two frontend versions.
   Added a branch for green button within the frontend, and made an image for the branch.
+  Added aditional use case for limiting number of requests.
   
 - Carolyn: https://github.com/doda2025-team3/operation/pull/23
   Worked on integrating traffic management to the main branch, as well as implemented sticky sessions. Fixed some aspects of traffic management as well.
   Updated the README file.
 
 ### Week Q2.9 (Jan 19+)
-- Gabriel:
-  Continued with the continous experimentation.
+- Gabriel: https://github.com/doda2025-team3/operation/pull/25
+  Implemented continous experimentation section.
 

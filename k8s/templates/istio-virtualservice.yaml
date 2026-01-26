@@ -8,63 +8,71 @@ spec:
   hosts:
     - "*"
   http:
-    - match:
-        - headers:
-            cookie:
-              regex: "^(.*;)?(experiment=v1)(;.*)?$"
-          uri:
-            prefix: /
-      route:
-        - destination:
-            host: app
-            subset: v1
-            port:
-              number: {{ .Values.app.port }}
-          headers:
-            response:
-              add:
-                app-subset: "v1"
+  - match:
+    - headers:
+        cookie:
+          # regex: "^(.*;)?(experiment=v1)(;.*)?$"
+          regex: ".*(^|;\\s*)experiment=v1(;|$).*"
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: app
+        subset: v1
+        port:
+          number: {{ .Values.app.port }}
+      headers:
+        response:
+          add:
+            app-subset: "v1"
+  - match:
+    - headers:
+        cookie:
+          # regex: "^(.*;)?(experiment=v2)(;.*)?$"
+          regex: ".*(^|;\\s*)experiment=v2(;|$).*"
 
-    - match:
-      - headers:
-          cookie:
-            regex: "^(.*;)?(experiment=v2)(;.*)?$"
-        uri: 
-          prefix: /
-      route:
-        - destination:
-            host: app
-            subset: v2
-            port:
-              number: {{ .Values.app.port }}
-          headers:
-            response:
-              add:
-                app-subset: "v2"
-              
-    - match:
-        - uri:
-            prefix: /
-      route:
-        - destination:
-            host: app
-            subset: v1
-            port:
-              number: {{ .Values.app.port }}
-          weight: 90
-          headers:
-            response:
-              add:
-                set-cookie: "experiment=v1; Path=/; Max-Age=86400"
-                app-subset: "v1"
-        - destination:
-            host: app
-            subset: v2
-            port:
-              number: {{ .Values.app.port }}
-          weight: 10
-          headers:
-            response:
-              add:
-                set-cookie: "experiment=v2; Path=/; Max-Age=86400"
-                app-subset: "v2"
+      uri: 
+        prefix: /
+    route:
+    - destination:
+        host: app
+        subset: v2
+        port:
+          number: {{ .Values.app.port }}
+      headers:
+        response:
+          add:
+            app-subset: "v2"       
+  - match:
+    # - headers:
+    #     cookie:
+    #       # regex: "^(.*;)?(experiment=)(;.*)?$"
+    #       regex: "^(?!.*(^|;\\s*)experiment=).*"
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: app
+        subset: v1
+        port:
+          number: {{ .Values.app.port }}
+      weight: 90
+      headers:
+        response:
+          add:
+            Set-Cookie: "experiment=v1; Path=/; Max-Age=86400; SameSite=Lax"
+            app-subset: "v1"
+    - destination:
+        host: app
+        subset: v2
+        port:
+          number: {{ .Values.app.port }}
+      weight: 10
+      headers:
+        response:
+          add:
+            Set-Cookie: "experiment=v2; Path=/; Max-Age=86400; SameSite=Lax"
+            app-subset: "v2"
+      
+
+

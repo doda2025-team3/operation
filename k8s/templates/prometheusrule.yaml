@@ -9,12 +9,12 @@ spec:
     - name: operation.rules
       rules:
         - alert: HighRequestRate
-          expr: sum(rate(sms_predictions_total[1m])) * 60 > 15
-          for: 2m
+          expr: sum(rate(sms_predictions_total[1m])) * 60 > 7
+          for: 1m
           labels:
             severity: warning
             namespace: {{ .Release.Namespace }}
           annotations:
             summary: "High request rate on {{ `{{ $labels.instance }}` }}"
             description: >
-              Service received more than 15 HTTP requests/minute for >= 2 minutes.
+              Service received more than 7 HTTP requests/minute for >= 1 minutes.

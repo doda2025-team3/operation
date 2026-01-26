@@ -69,30 +69,23 @@
         group: vagrant
         mode: '0600' #0644
 
-    # Step 15
-    # - name: Download Flannel manifest
-    #   ansible.builtin.get_url:
-    #     url: https://raw.githubusercontent.com/flannel-io/flannel/v0.26.7/Documentation/kube-flannel.yml
-    #     dest: /tmp/kube-flannel.yml
-    #     owner: vagrant
-    #     group: vagrant
-    #     mode: '0644'
+    - name: Check if Flannel manifest already exists
+      ansible.builtin.stat:
+        path: /home/vagrant/kube-flannel.yml
+      register: flannel_file
 
     - name: Download Flannel manifest
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/flannel-io/flannel/v0.26.7/Documentation/kube-flannel.yml
-        dest: /tmp/kube-flannel.yml
-        owner: root
-        group: root
+        dest: /home/vagrant/kube-flannel.yml
+        owner: vagrant
+        group: vagrant
         mode: '0644'
-
-    # - name: Patch Flannel to use eth1 
-    #   ansible.builtin.shell: |
-    #     sed -i '/- --kube-subnet-mgr/a\        - --iface=eth1' /tmp/kube-flannel.yml
+      when: not flannel_file.stat.exists
 
     - name: Patch Flannel to use eth1 
       ansible.builtin.lineinfile:
-        path: /tmp/kube-flannel.yml
+        path: /home/vagrant/kube-flannel.yml
         insertafter: '^\s*- --kube-subnet-mgr\s*$'
         line: '        - --iface=eth1'
         state: present
@@ -104,15 +97,12 @@
         timeout: 180
 
     - name: Apply Flannel manifest
-      ansible.builtin.command: kubectl apply --validate=false -f /tmp/kube-flannel.yml
+      ansible.builtin.command: kubectl apply --validate=false -f /home/vagrant/kube-flannel.yml
       become_user: vagrant
       environment:
         KUBECONFIG: /home/vagrant/.kube/config
       register: flannel_apply
-      changed_when: >
-        ('created' in flannel_apply.stdout) or
-        ('configured' in flannel_apply.stdout)
-
+      changed_when: "'created' in flannel_apply.stdout or 'configured' in flannel_apply.stdout"
 
     # Step 16
     - name: Add Helm GPG key

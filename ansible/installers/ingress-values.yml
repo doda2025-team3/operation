@@ -5,3 +5,5 @@ controller:
   ingressClassResource:
     name: nginx
     default: true
+  extraArgs:
+    default-ssl-certificate: "ingress-nginx/default-local-tls"

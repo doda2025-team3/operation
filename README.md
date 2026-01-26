@@ -3,7 +3,9 @@
 This repository contains all the information required to run the SMS Checker application and operate the cluster. Please refer to the following repositories for more information:
 
 The [app] repository that contains the frontend Spring Boot service: (https://github.com/doda2025-team3/app/tree/A1) 
-The [model-service] repository that contains the backend Python service: (https://github.com/doda2025-team3/model-service/tree/A1) 
+
+The [model-service] repository that contains the backend Python service: (https://github.com/doda2025-team3/model-service/tree/A1)
+
 The [lib-version] repository that includes a version aware Maven Library: (https://github.com/doda2025-team3/lib-version/tree/A1)
 
 
@@ -32,6 +34,17 @@ To change the version of the lib-version package, like with the app image, chang
 
 To change the version for the model-service image, change the version in the VERSION_CONTROL file and push to main once again. Alternatively, the version can also be changed manually in GitHub Actions. 
 
+## Environment variables
+
+There exists an .env file in the repository wherein you can change the following variables: 
+- MODEL_URL
+- APP_IMAGE
+- MODEL_IMAGE
+- APP_VERSION
+- MODEL_VERSION
+- MODEL_PORT
+- SERVER_PORT
+
 ## Cleaning up
 Run the following command to stop running the application:
 ```bash
@@ -41,7 +54,7 @@ docker compose down
 # Assignment 2: Provisioning a Kubernetes Cluster
 
 ## Requirements
-VirtualBox, Ansible and Vagrant need to be install onto the host to enable the setting up of the kubernestes cluster.
+VirtualBox, Ansible and Vagrant need to be install onto the host to enable the setting up of the Kubernetes cluster.
 
 ## Running the cluster
 In order to run the cluster, run the following command:
@@ -49,22 +62,33 @@ In order to run the cluster, run the following command:
 vagrant up --no-provision
 ```
 
-Assuming no changes have been made to the node count, this command will bring up three nodes:
+Assuming no changes have been made to the node count (which is configurable), this command will bring up three nodes:
 - the [ctrl] node
 - two worker nodes, [node-1] and [node-2]
 
-This command also automatically generates the appropriate [inventory.cfg] file with only the active nodes added to it. 
+This command also automatically generates the appropriate [inventory.cfg] file with only the active nodes appended to it. 
 
 After the nodes have been set up, run the following command to provision the VMs:
 ```bash
-vagrant provision
+ansible-playbook -i inventory.cfg ansible/general.yml && ansible-playbook -i inventory.cfg ansible/ctrl.yml && ansible-playbook -i inventory.cfg ansible/node.yml && ansible-playbook -i inventory.cfg ansible/finalization.yml
 ```
 
-Once all the nodes have been provisioned, run this command to finalize the cluster:
+Note: if you are in a different directory, please edit, for example [.ansible/finalization.yml], accordingly!
+
+## Kubernetes dashboard
+
+To access the Kubernetes Dashboard, please add the following into /etc/hosts:
 ```bash
-ansible-playbook -i inventory.cfg ./ansible/finalization.yml
+echo "192.168.56.95 dashboard.local" | sudo tee -a /etc/hosts
 ```
-Note: if you are in a different directory, please edit [.ansible/finalization.yml] accordingly!
+
+Then, to create the token, run:
+```bash
+kubectl -n kubernetes-dashboard create token admin-user
+```
+
+Copy-paste the output to gain access to the dashboard. 
+
 
 ## Cleaning up
 Run the following command to stop the cluster:
@@ -79,12 +103,10 @@ Helm needs to be installed on the host.
 
 ## Deploying with Helm
 
-Please run the commands shown previously to set up the kubernetes cluster.
+Please run the commands shown previously to set up the Kubernetes cluster.
 
-Once the cluster has been finalized, run the following commands:
-
+Once the cluster has been finalized, run the following command:
 ```bash
-helm dependency update
 export KUBECONFIG=$(pwd)/kubeconfig
 ```
 
@@ -95,15 +117,89 @@ kubectl get nodes
 
 All three nodes should be visible.
 
-Finally, run the command:
+Finally, run the following commands to install the helm chart:
 
 ```bash
+helm dependency update
 helm upgrade --install myapp ./k8s
 ```
 
-The app can then be accessed by following the steps below:
+The app frontend can then be accessed by following the steps below:
 - Add the IP address to /etc/hosts.
 ```bash
-echo "192.168.56.95 operation.local operation-canary.local" | sudo tee -a /etc/hosts
+echo "192.168.56.91 operation.local operation-canary.local" | sudo tee -a /etc/hosts
 ```
 - Open the link (http://operation.local/sms/) to access the frontend of the application. 
+
+## Prometheus
+This tool scrapes for application-specific metrics on the /metrics endpoint of the app. To view the dashboard, port-forward using the command below, and then visit the site (http://localhost:9090).
+
+```bash
+```
+
+## Alerting
+A PrometheusRule was used to define the alert. Here, we are looking at a high request rate. When the application received more than 7 requests per minute, for two minutes, then the alert can be seen firing in Prometheus.
+
+To view the dashboard, port-forward like so:
+```bash
+```
+
+Then visit this site,(http://localhost:9093).
+
+Run the following command to trigger this:
+```
+END=$((SECONDS+130))
+i=0
+while [ $SECONDS -lt $END ]; do
+  curl -s -o /dev/null \
+    -H "Content-Type: application/json" \
+    -H "Cookie: user_id=user-$i" \
+    -X POST http://operation.local/sms/ \
+    -d '{"sms":"this is a spam test message"}'
+  i=$((i+1))
+  sleep 5
+done
+
+```
+
+After a while, the alert on Prometheus can be seen as 'firing', and the alert should be visible in the Alertmanager dashboard. 
+
+To receive an email, please also add your credentials like to the values.yaml file accordingly, under monitoring. Note that password refers to your app password!  
+
+An email should then be sent to your email after triggering the alert like shown above.
+
+## Grafana
+Grafana is used to visualize the metrics of the application. Similarly to the previous two tools, to view the dashboard, please port-forward using the command below and then visit the site (http://localhost:3000).
+
+```bash
+```
+
+# Assignment 4: Istio Service Mesh
+
+For this, traffic management was made possible via the use of Gateways, DestinationRules and VirtualServices. 
+- Gateways acted as the entry point for incoming traffic and passes them into the Istio service mesh on port 80.
+- DestinationRules defined the two subsets, v1 and v2.
+- VirtualService defined the traffic rules. Here is where the 90/10 split was defined, where 90% of traffic gets taken to the stable release and 10% of the traffic gets taken to the canaray release. 
+
+The split can be tested by running the following command:
+```bash
+```
+
+The split can be seen to roughly follow 90%/10%.
+
+## Sticky sessions
+
+Sticky sessions was implemented in the VirtualService resource by cookie-based assignment. One first request, the request matches the catch-all rule and is directed via the 90/10 split. Following that, it sets the appropriate cookie value. On subsequent requests, it gets taken to corresponding version based on the value of the cookie. 
+
+This can be tested by running the following command:
+```bash
+```
+
+The result should show that the same version was seen every time. 
+
+Should a specific version want to be seen, you can simple change the cookie to the appropriate version. 
+
+## Additional Use case: Rate limiting
+
+
+

@@ -41,7 +41,7 @@ monitoring:
   enabled: true
   alerts:
     email:
-      enabled: false # Change to true when wanting to test - don't forget to test! Got some alerts we got to straighten out
+      enabled: false # Change to true when wanting to test!
       to: "democarolyn88@gmail.com"
       from: "democarolyn88@gmail.com"
       require_tls: true
@@ -68,4 +68,11 @@ sharedVolume:
   mountPath: "/app/output"
 
 istio:
+  ingressGatewayLabel: ingressgateway
+  namespace: istio-system
+
+rateLimit:
+  enabled: true
+  requestsPerMinute: 5
+  istioNamespace: istio-system 
   ingressGatewayLabel: ingressgateway

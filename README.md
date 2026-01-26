@@ -201,5 +201,10 @@ Should a specific version want to be seen, you can simple change the cookie to t
 
 ## Additional Use case: Rate limiting
 
+For ratelimiting, an envoyfilter was used. Within the envoyfilter there is lua code that injects a user id to the user and uses that id to keep count of requests. When the count is beyond the threshold, it limits the user with 429 error code. To ensure the metrics aren't limited, post requests to `/sms/track-click` are not included.
 
-
+The rate limiter can be tested with:
+```bash
+for i in {1..20}; do curl -s -o /dev/null -w "Request $i: %{http_code}\n" http://operation.local/sms/; done
+```
+The result should show some 200 codes and then 429 codes.

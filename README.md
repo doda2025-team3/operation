@@ -2,11 +2,11 @@
 
 This repository contains all the information required to run the SMS Checker application and operate the cluster. Please refer to the following repositories for more information:
 
-The [app] repository that contains the frontend Spring Boot service: (https://github.com/doda2025-team3/app/tree/A1) 
+The [app] repository that contains the frontend Spring Boot service: (https://github.com/doda2025-team3/app) 
 
-The [model-service] repository that contains the backend Python service: (https://github.com/doda2025-team3/model-service/tree/A1)
+The [model-service] repository that contains the backend Python service: (https://github.com/doda2025-team3/model-service)
 
-The [lib-version] repository that includes a version aware Maven Library: (https://github.com/doda2025-team3/lib-version/tree/A1)
+The [lib-version] repository that includes a version aware Maven Library: (https://github.com/doda2025-team3/lib-version)
 
 
 # Assignment 1: Version Release and Containerization

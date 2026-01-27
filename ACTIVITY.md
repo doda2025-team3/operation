@@ -128,11 +128,13 @@ Attended the lab and completed F3 to F6 by configuring docker and env variables.
 
 ### Week Q2.9 (Jan 19+)
 - Gabriel: https://github.com/doda2025-team3/operation/pull/25
-  Implemented continuous experimentation section.
+  Implemented continuous experimentation section and fixed Grafana.
 - Carolyn: https://github.com/doda2025-team3/operation/pull/23
   Worked on integrating everything from traffic management
 
 
 ### Week Q2.10 (Jan 26+)
+- Gabriel: https://github.com/doda2025-team3/operation/pull/29, https://github.com/doda2025-team3/operation/pull/30
+  Added documentation for the ratelimiter
 - Carolyn: https://github.com/doda2025-team3/operation/pull/31
   Fixed finalisation playbook, added documentation and images, added extension, etc. 
